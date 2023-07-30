@@ -1,0 +1,17 @@
+log:
+  level: DEBUG
+
+accessLog:
+
+entryPoints:
+  web:
+    # http
+    address: ":80"
+
+api:
+  insecure: true
+  dashboard: true
+
+providers:
+  docker:
+    exposedByDefault: false

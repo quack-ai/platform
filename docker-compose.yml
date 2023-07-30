@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  dashboard:
+    build: .
+    command: streamlit run /app/app.py --server.port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - API_ENDPOINT=${API_ENDPOINT}
+      - AUTH_ENDPOINT=${AUTH_ENDPOINT}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`dashboard.localhost`)"
+
+  traefik:
+    image: traefik:v2.9.6
+    volumes:
+      - ./traefik.yml:/etc/traefik/traefik.yml"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    ports:
+      - "8050:80"
+      - "8081:8080"
