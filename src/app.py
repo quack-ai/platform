@@ -4,7 +4,6 @@
 # See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
 
 import os
-import webbrowser
 from operator import itemgetter
 
 import pandas as pd
@@ -20,6 +19,40 @@ GHAPI_ENDPOINT = "https://api.github.com"
 # cf. https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes
 GH_OAUTH_SCOPE: str = "read:user%20user:email%20repo"
 APP_URI: str = os.environ["APP_URI"]
+
+
+def button_markdown(text: str, url: str, color: str = "#FD504D", disabled: bool = False) -> str:
+    if disabled:
+        return f"""
+        <div style="
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            color: rgba(250, 250, 250, 0.4);
+            background-color: transparent;
+            border-color: rgba(250, 250, 250, 0.2);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(250, 250, 250, 0.2);
+            cursor: not-allowed;
+            text-decoration: none;">
+            {text}
+        </div>
+        """
+    return f"""
+    <a href="{url}" target="_self">
+        <div style="
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            color: rgba(250, 250, 250);
+            background-color: transparent;
+            border-color: rgb(43, 44, 54);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(250, 250, 250, 0.2);
+            cursor: pointer;
+            text-decoration: none;">
+            {text}
+        </div>
+    </a>
+    """
 
 
 def main():
@@ -39,8 +72,20 @@ def main():
     st.sidebar.title("Authentication")
     # Authentication
     gh_code = st.experimental_get_query_params().get("code", [])
-    if st.sidebar.button("Login with GitHub", disabled=len(gh_code) == 1):
-        webbrowser.open(f"{API_ENDPOINT}/login/authorize?scope={GH_OAUTH_SCOPE}&redirect_uri={APP_URI}")
+    # if st.sidebar.button("Login with GitHub", disabled=len(gh_code) == 1):
+    #     webbrowser.open(f"{API_ENDPOINT}/login/authorize?scope={GH_OAUTH_SCOPE}&redirect_uri={APP_URI}")
+    #     redirect_button(
+    #         f"{API_ENDPOINT}/login/authorize?scope={GH_OAUTH_SCOPE}&redirect_uri={APP_URI}",
+    #         "Login with GitHub",
+    #     )
+    st.sidebar.markdown(
+        button_markdown(
+            "Login with GitHub",
+            f"{API_ENDPOINT}/login/authorize?scope={GH_OAUTH_SCOPE}&redirect_uri={APP_URI}",
+            disabled=len(gh_code) == 1,
+        ),
+        unsafe_allow_html=True,
+    )
     # Retrieve a GitHub token & a Quack token
     if len(gh_code) == 1 and st.session_state.get("token") is None:
         st.session_state["gh_code"] = gh_code[0]
