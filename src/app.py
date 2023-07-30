@@ -39,6 +39,7 @@ def main():
     if len(gh_token) == 1 and st.session_state.get("token") is None:
         st.session_state["gh_token"] = gh_token[0]
         with st.spinner("Authenticating..."):
+            # Use Quack authentication API
             st.session_state["token"] = st.session_state.get(
                 "token",
                 requests.post(
@@ -48,6 +49,7 @@ def main():
                 ).json()["access_token"],
             )
         with st.spinner("Fetching repos..."):
+            # Fetch public repos of the user
             st.session_state["available_repos"] = requests.get(
                 f"{GHAPI_ENDPOINT}/user/repos",
                 params={  # type: ignore[arg-type]
@@ -70,7 +72,7 @@ def main():
     st.session_state["is_repo_registered"] = st.session_state.get("is_repo_registered", False)
     if isinstance(repo_idx, int):
         st.session_state["is_repo_selected"] = True
-        # Installed repos
+        # Fetch the repos installed on Quack API
         installed_repos = requests.get(
             f"{API_ENDPOINT}/repos",
             headers={"Authorization": f"Bearer {st.session_state['token']}"},
@@ -88,6 +90,7 @@ def main():
         )
         if st.sidebar.button("Register repository"):
             gh_repo = st.session_state["available_repos"][repo_idx]
+            # Register the repo on Quack API
             response = requests.post(
                 f"{API_ENDPOINT}/repos",
                 json={
@@ -111,6 +114,7 @@ def main():
     if st.session_state.get("token") is not None and st.session_state.get("repo_idx") is not None:
         gh_repo = st.session_state["available_repos"][repo_idx]
         with st.spinner("Fetching guidelines..."):
+            # Fetch the guidelines from Quack API
             st.session_state["guidelines"] = sorted(
                 requests.get(
                     f"{API_ENDPOINT}/guidelines/from/{gh_repo['id']}",
