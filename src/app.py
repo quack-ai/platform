@@ -308,24 +308,24 @@ def main():
                     if guideline_order != original_order[guideline_id]
                 }
                 # Call the API
-                any_error = False
                 guideline_id_to_idx = {
                     guideline["id"]: idx for idx, guideline in enumerate(st.session_state["guidelines"])
                 }
-                for guideline_id, order_idx in updated_order.items():
-                    response = requests.put(
-                        f"{API_ENDPOINT}/guidelines/{guideline_id}/order/{order_idx}",
-                        headers={"Authorization": f"Bearer {st.session_state['token']}"},
-                        timeout=HTTP_TIMEOUT,
-                    )
-                    if response.status_code == 200:
-                        st.session_state["guidelines"][guideline_id_to_idx[int(guideline_id)]]["order"] = order_idx
-                    else:
-                        any_error = True
+                ids_in_order = [
+                    gid for gid, order in sorted(updated_guidelines.order.to_dict().items(), key=itemgetter(1))
+                ]
+                response = requests.put(
+                    f"{API_ENDPOINT}/repos/{gh_repo['id']}/guidelines/order",
+                    json={"guideline_ids": ids_in_order},
+                    headers={"Authorization": f"Bearer {st.session_state['token']}"},
+                    timeout=HTTP_TIMEOUT,
+                )
 
-                if any_error:
+                if response.status_code != 200:
                     st.error("Unable to update order", icon="🚨")
                 else:
+                    for guideline_id, order_idx in updated_order.items():
+                        st.session_state["guidelines"][guideline_id_to_idx[int(guideline_id)]]["order"] = order_idx
                     st.session_state["guidelines"] = sorted(st.session_state["guidelines"], key=itemgetter("order"))
                     st.toast("Guideline order updated", icon="✅")
 
