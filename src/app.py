@@ -101,7 +101,8 @@ def main():
     if st.session_state["is_repo_selected"] and not st.session_state["is_repo_registered"]:
         # Register the repo
         st.sidebar.info(
-            f"The repository {st.session_state['available_repos'][repo_idx]['full_name']} is not yet registered. Would you like to install it?"
+            f"The repository {st.session_state['available_repos'][repo_idx]['full_name']} is not yet registered. "
+            "Would you like to install it?"
         )
         if st.sidebar.button("Register repository"):
             gh_repo = st.session_state["available_repos"][repo_idx]
