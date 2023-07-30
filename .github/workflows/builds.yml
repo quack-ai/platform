@@ -27,8 +27,8 @@ jobs:
           API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
         run: docker-compose up -d --build
       - name: Docker sanity check
-        run: sleep 20 && nc -vz api.localhost 8050
+        run: sleep 20 && nc -vz api.localhost 8008
       - name: Debug
         run: docker-compose logs
       - name: Ping server
-        run: curl http://dashboard.localhost:8050
+        run: curl http://dashboard.localhost:8008
