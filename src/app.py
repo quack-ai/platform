@@ -10,11 +10,16 @@ from operator import itemgetter
 import pandas as pd
 import requests
 import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
 
 API_ENDPOINT: str = os.environ["API_ENDPOINT"]
-AUTH_ENDPOINT: str = os.environ["AUTH_ENDPOINT"]
 HTTP_TIMEOUT: int = int(os.getenv("HTTP_TIMEOUT", 10))
 GHAPI_ENDPOINT = "https://api.github.com"
+# cf. https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes
+GH_OAUTH_SCOPE: str = "read:user%20user:email%20repo"
+APP_URI: str = os.environ["APP_URI"]
 
 
 def main():
@@ -33,12 +38,22 @@ def main():
     # Sidebar
     st.sidebar.title("Authentication")
     # Authentication
-    gh_token = st.experimental_get_query_params().get("gh_token", [])
-    if st.sidebar.button("Login with GitHub", disabled=len(gh_token) == 1):
-        webbrowser.open(AUTH_ENDPOINT)
-    if len(gh_token) == 1 and st.session_state.get("token") is None:
-        st.session_state["gh_token"] = gh_token[0]
+    gh_code = st.experimental_get_query_params().get("code", [])
+    if st.sidebar.button("Login with GitHub", disabled=len(gh_code) == 1):
+        webbrowser.open(f"{API_ENDPOINT}/login/authorize?scope={GH_OAUTH_SCOPE}&redirect_uri={APP_URI}")
+    # Retrieve a GitHub token & a Quack token
+    if len(gh_code) == 1 and st.session_state.get("token") is None:
+        st.session_state["gh_code"] = gh_code[0]
         with st.spinner("Authenticating..."):
+            # Use the authorization code to get a GitHub token
+            st.session_state["gh_token"] = st.session_state.get(
+                "gh_token",
+                requests.post(
+                    f"{API_ENDPOINT}/login/github",
+                    json={"code": st.session_state["gh_code"], "redirect_uri": APP_URI},
+                    timeout=HTTP_TIMEOUT,
+                ).json()["access_token"],
+            )
             # Use Quack authentication API
             st.session_state["token"] = st.session_state.get(
                 "token",
