@@ -3,12 +3,12 @@ version: '3.7'
 services:
   dashboard:
     build: .
-    command: streamlit run /app/app.py --server.port 8000
+    command: streamlit run /app/app.py --server.port 8008
     ports:
-      - "8000:8000"
+      - "8008:8008"
     environment:
       - API_ENDPOINT=${API_ENDPOINT}
-      - AUTH_ENDPOINT=${AUTH_ENDPOINT}
+      - APP_URI=http://dashboard.localhost:8008
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`dashboard.localhost`)"
