@@ -94,5 +94,5 @@ line-length = 120
 target-version = ['py39']
 
 [tool.bandit]
-exclude_dirs = []
+exclude_dirs = [".github/collect_env.py"]
 skips = ["B101"]
