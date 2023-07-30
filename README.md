@@ -26,7 +26,7 @@ You can run the API containers using this command:
 make run
 ```
 
-You can now navigate to [`http://dashboard.localhost:8000`](http://dashboard.localhost:8000) to interact with the [Streamlit](https://streamlit.io/) app.
+You can now navigate to [`http://dashboard.localhost:8008`](http://dashboard.localhost:8008) to interact with the [Streamlit](https://streamlit.io/) app.
 
 ![screenshot](https://user-images.githubusercontent.com/26927750/257068796-daf8f0f7-1602-4bad-adba-eba8b5a3fc0a.png)
 
@@ -55,7 +55,7 @@ This file will have to hold the following information:
 So your `.env` file should look like something similar to:
 ```
 API_ENDPOINT='https://replace.with.quack.endpoint/'
-APP_URI='http://dashboard.localhost:8000'
+APP_URI='http://dashboard.localhost:8008'
 ```
 
 The file should be placed at the root folder of your local copy of the project.
