@@ -1,0 +1,334 @@
+# Copyright (C) 2023, Quack AI.
+
+# This program is licensed under the Apache License 2.0.
+# See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
+
+import os
+from operator import itemgetter
+
+import pandas as pd
+import requests
+import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_ENDPOINT: str = os.environ["API_ENDPOINT"]
+HTTP_TIMEOUT: int = int(os.getenv("HTTP_TIMEOUT", 10))
+GHAPI_ENDPOINT = "https://api.github.com"
+# cf. https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes
+GH_OAUTH_SCOPE: str = "read:user%20user:email%20repo"
+APP_URI: str = os.environ["APP_URI"]
+
+
+def button_markdown(text: str, url: str, color: str = "#FD504D", disabled: bool = False) -> str:
+    if disabled:
+        return f"""
+        <div style="
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            color: rgba(250, 250, 250, 0.4);
+            background-color: transparent;
+            border-color: rgba(250, 250, 250, 0.2);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(250, 250, 250, 0.2);
+            cursor: not-allowed;
+            text-decoration: none;">
+            {text}
+        </div>
+        """
+    return f"""
+    <a href="{url}" target="_self">
+        <div style="
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            color: rgba(250, 250, 250);
+            background-color: transparent;
+            border-color: rgb(43, 44, 54);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(250, 250, 250, 0.2);
+            cursor: pointer;
+            text-decoration: none;">
+            {text}
+        </div>
+    </a>
+    """
+
+
+def main():
+    # Wide mode
+    st.set_page_config(
+        page_title="Quack AI - Guideline management",
+        page_icon="https://avatars.githubusercontent.com/u/118990213?s=200&v=4",
+        layout="wide",
+        menu_items={
+            "Report a bug": "https://github.com/quack-ai/contribution-platform/issues/new",
+            "About": "https://github.com/quack-ai/contribution-platform",
+        },
+    )
+    st.title("Guideline management dashboard")
+
+    # Sidebar
+    st.sidebar.title("Authentication")
+    # Authentication
+    gh_code = st.experimental_get_query_params().get("code", [])
+    # if st.sidebar.button("Login with GitHub", disabled=len(gh_code) == 1):
+    #     webbrowser.open(f"{API_ENDPOINT}/login/authorize?scope={GH_OAUTH_SCOPE}&redirect_uri={APP_URI}")
+    #     redirect_button(
+    #         f"{API_ENDPOINT}/login/authorize?scope={GH_OAUTH_SCOPE}&redirect_uri={APP_URI}",
+    #         "Login with GitHub",
+    #     )
+    st.sidebar.markdown(
+        button_markdown(
+            "Login with GitHub",
+            f"{API_ENDPOINT}/login/authorize?scope={GH_OAUTH_SCOPE}&redirect_uri={APP_URI}",
+            disabled=len(gh_code) == 1,
+        ),
+        unsafe_allow_html=True,
+    )
+    # Retrieve a GitHub token & a Quack token
+    if len(gh_code) == 1 and st.session_state.get("token") is None:
+        st.session_state["gh_code"] = gh_code[0]
+        with st.spinner("Authenticating..."):
+            # Use the authorization code to get a GitHub token
+            st.session_state["gh_token"] = st.session_state.get(
+                "gh_token",
+                requests.post(
+                    f"{API_ENDPOINT}/login/github",
+                    json={"code": st.session_state["gh_code"], "redirect_uri": APP_URI},
+                    timeout=HTTP_TIMEOUT,
+                ).json()["access_token"],
+            )
+            # Use Quack authentication API
+            st.session_state["token"] = st.session_state.get(
+                "token",
+                requests.post(
+                    f"{API_ENDPOINT}/login/token",
+                    json={"github_token": st.session_state["gh_token"]},
+                    timeout=HTTP_TIMEOUT,
+                ).json()["access_token"],
+            )
+        with st.spinner("Fetching repos..."):
+            # Fetch public repos of the user
+            st.session_state["available_repos"] = requests.get(
+                f"{GHAPI_ENDPOINT}/user/repos",
+                params={  # type: ignore[arg-type]
+                    "affiliation": "owner",
+                    "visibility": "public",
+                    "per_page": 100,
+                },
+                headers={"Authorization": f"Bearer {st.session_state['gh_token']}"},
+                timeout=HTTP_TIMEOUT,
+            ).json()
+
+    # Repo selection
+    st.sidebar.title("Selection")
+    repo_idx = st.sidebar.selectbox(
+        "Repositories",
+        range(len(st.session_state.get("available_repos", []))),
+        format_func=lambda idx: st.session_state.get("available_repos", [])[idx]["full_name"],
+    )
+    st.session_state["is_repo_selected"] = st.session_state.get("is_repo_selected", False)
+    st.session_state["is_repo_registered"] = st.session_state.get("is_repo_registered", False)
+    if isinstance(repo_idx, int):
+        st.session_state["is_repo_selected"] = True
+        # Fetch the repos installed on Quack API
+        installed_repos = requests.get(
+            f"{API_ENDPOINT}/repos",
+            headers={"Authorization": f"Bearer {st.session_state['token']}"},
+            timeout=HTTP_TIMEOUT,
+        ).json()
+        installed_names = [repo["full_name"] for repo in installed_repos]
+        st.session_state["is_repo_registered"] = (
+            st.session_state["available_repos"][repo_idx]["full_name"] in installed_names
+        )
+
+    if st.session_state["is_repo_selected"] and not st.session_state["is_repo_registered"]:
+        # Register the repo
+        st.sidebar.info(
+            f"The repository {st.session_state['available_repos'][repo_idx]['full_name']} is not yet registered. "
+            "Would you like to install it?"
+        )
+        if st.sidebar.button("Register repository"):
+            gh_repo = st.session_state["available_repos"][repo_idx]
+            # Register the repo on Quack API
+            response = requests.post(
+                f"{API_ENDPOINT}/repos",
+                json={
+                    "id": gh_repo["id"],
+                    "owner_id": gh_repo["owner"]["id"],
+                    "full_name": gh_repo["full_name"],
+                },
+                headers={"Authorization": f"Bearer {st.session_state['token']}"},
+                timeout=HTTP_TIMEOUT,
+            )
+            if response.status_code == 201:
+                st.session_state["is_repo_registered"] = True
+                st.balloons()
+                st.toast("Repository registered", icon="✅")
+
+    if st.session_state["is_repo_selected"] and st.session_state["is_repo_registered"]:
+        st.session_state["repo_idx"] = repo_idx
+
+    # Fetch guidelines
+    st.session_state["guidelines"] = []
+    if st.session_state.get("token") is not None and st.session_state.get("repo_idx") is not None:
+        gh_repo = st.session_state["available_repos"][repo_idx]
+        with st.spinner("Fetching guidelines..."):
+            # Fetch the guidelines from Quack API
+            st.session_state["guidelines"] = sorted(
+                requests.get(
+                    f"{API_ENDPOINT}/guidelines/from/{gh_repo['id']}",
+                    headers={"Authorization": f"Bearer {st.session_state['token']}"},
+                    timeout=HTTP_TIMEOUT,
+                ).json(),
+                key=itemgetter("order"),
+            )
+    guideline_placeholder = st.sidebar.empty()
+
+    # Guideline registration
+    if st.sidebar.button(
+        "Create guideline",
+        disabled=not st.session_state["is_repo_selected"] or not st.session_state["is_repo_registered"],
+    ):
+        gh_repo = st.session_state["available_repos"][repo_idx]
+        # Create an entry
+        payload = {
+            "repo_id": gh_repo["id"],
+            "title": f"Guideline title {len(st.session_state['guidelines'])}",
+            "order": len(st.session_state["guidelines"]),
+            "details": "Guideline description",
+        }
+        response = requests.post(
+            f"{API_ENDPOINT}/guidelines",
+            json=payload,
+            headers={"Authorization": f"Bearer {st.session_state['token']}"},
+            timeout=HTTP_TIMEOUT,
+        )
+        if response.status_code == 201:
+            st.toast("Guideline created", icon="🎉")
+            # Avoid another API call
+            st.session_state["guidelines"].append(response.json())
+            st.session_state["guideline_idx"] = len(st.session_state["guidelines"]) - 1
+        else:
+            st.sidebar.error("Unable to create guideline", icon="🚨")
+
+    if st.sidebar.button(
+        "Delete guideline",
+        disabled=len(st.session_state["guidelines"]) == 0 or st.session_state.get("guideline_idx") is None,
+    ):
+        # Push the edit to the API
+        response = requests.delete(
+            f"{API_ENDPOINT}/guidelines/{st.session_state['guidelines'][st.session_state['guideline_idx']]['id']}",
+            headers={"Authorization": f"Bearer {st.session_state['token']}"},
+            timeout=HTTP_TIMEOUT,
+        )
+        if response.status_code == 200:
+            st.toast("Guideline deleted", icon="✅")
+            # Avoid another API call
+            del st.session_state["guidelines"][st.session_state["guideline_idx"]]
+            st.session_state["guideline_idx"] = 0 if len(st.session_state["guidelines"]) > 0 else None
+        else:
+            st.sidebar.error("Unable to delete guideline", icon="🚨")
+
+    guideline_idx = guideline_placeholder.selectbox(
+        "Repo guidelines",
+        range(len(st.session_state["guidelines"])),
+        format_func=lambda idx: f"{idx} - {st.session_state['guidelines'][idx]['title']}",
+        index=st.session_state.get("guideline_idx", 0),
+    )
+    # Guideline selection
+    if isinstance(guideline_idx, int):
+        st.session_state["guideline_idx"] = guideline_idx
+
+    content_panel, order_panel = st.tabs(["Content editor", "Order editor"])
+    with content_panel:
+        with st.form("guideline_form"):
+            guideline_title = st.text_input(
+                "Title",
+                max_chars=100,
+                value=st.session_state["guidelines"][st.session_state["guideline_idx"]]["title"]
+                if len(st.session_state["guidelines"]) > 0 and isinstance(st.session_state.get("guideline_idx"), int)
+                else "",
+                disabled=len(st.session_state["guidelines"]) == 0,
+            )
+            guideline_details = st.text_area(
+                "Details",
+                value=st.session_state["guidelines"][st.session_state["guideline_idx"]]["details"]
+                if len(st.session_state["guidelines"]) > 0 and isinstance(st.session_state.get("guideline_idx"), int)
+                else "",
+                disabled=len(st.session_state["guidelines"]) == 0,
+            )
+            save = st.form_submit_button(
+                "Save guideline",
+                disabled=st.session_state.get("guideline_idx") is None,
+            )
+            if save:
+                # Form check
+                if len(guideline_title) == 0 or len(guideline_details) == 0:
+                    st.error("Both the title & details sections need to be filled", icon="🚨")
+
+                # Push the edit to the API
+                response = requests.put(
+                    f"{API_ENDPOINT}/guidelines/{st.session_state['guidelines'][st.session_state['guideline_idx']]['id']}",
+                    json={"title": guideline_title, "details": guideline_details},
+                    headers={"Authorization": f"Bearer {st.session_state['token']}"},
+                    timeout=HTTP_TIMEOUT,
+                )
+                if response.status_code == 200:
+                    st.session_state["guidelines"][st.session_state["guideline_idx"]] = response.json()
+                    st.toast("Guideline saved", icon="✅")
+                else:
+                    st.error("Unable to save guideline", icon="🚨")
+
+    with order_panel:
+        df = pd.DataFrame(st.session_state["guidelines"])
+        original_order = df.set_index("id").order.to_dict() if df.shape[0] > 0 else {}
+        updated_guidelines = st.data_editor(
+            df.set_index("id") if df.shape[0] > 0 else df,
+            column_config={
+                "order": st.column_config.SelectboxColumn("Order", options=list(range(df.shape[0])), required=True),
+                "title": st.column_config.TextColumn("Title", max_chars=100),
+                "details": st.column_config.TextColumn("Details"),
+                "updated_at": st.column_config.DatetimeColumn("Last updated"),
+            },
+            column_order=("order", "title", "details", "updated_at"),
+            hide_index=True,
+            disabled=["title", "details", "updated_at"],
+        )
+        if st.button("Save guideline order"):
+            # Check that order is unique
+            if updated_guidelines.order.nunique() != df.shape[0]:
+                st.error("At least two entries have the same order index", icon="🚨")
+            else:
+                # Update only the modified entries
+                updated_order = {
+                    int(guideline_id): guideline_order
+                    for guideline_id, guideline_order in updated_guidelines.order.to_dict().items()
+                    if guideline_order != original_order[guideline_id]
+                }
+                # Call the API
+                guideline_id_to_idx = {
+                    guideline["id"]: idx for idx, guideline in enumerate(st.session_state["guidelines"])
+                }
+                ids_in_order = [
+                    gid for gid, order in sorted(updated_guidelines.order.to_dict().items(), key=itemgetter(1))
+                ]
+                response = requests.put(
+                    f"{API_ENDPOINT}/repos/{gh_repo['id']}/guidelines/order",
+                    json={"guideline_ids": ids_in_order},
+                    headers={"Authorization": f"Bearer {st.session_state['token']}"},
+                    timeout=HTTP_TIMEOUT,
+                )
+
+                if response.status_code != 200:
+                    st.error("Unable to update order", icon="🚨")
+                else:
+                    for guideline_id, order_idx in updated_order.items():
+                        st.session_state["guidelines"][guideline_id_to_idx[int(guideline_id)]]["order"] = order_idx
+                    st.session_state["guidelines"] = sorted(st.session_state["guidelines"], key=itemgetter("order"))
+                    st.toast("Guideline order updated", icon="✅")
+
+
+if __name__ == "__main__":
+    main()
