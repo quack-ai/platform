@@ -19,7 +19,7 @@
 "topic: build":
   - package.json
   - yarn.lock
-  - '*.config.js'
+  - "*.config.js"
   - tsconfig.json
 
 "topic: ci":
@@ -40,4 +40,3 @@
 "type: code quality":
   - .eslintrc.json
   - .prettierignore
-
