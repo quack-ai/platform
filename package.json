@@ -88,5 +88,5 @@
     "eslint-plugin-unused-imports": "^3.0.0",
     "prettier": "^3.0.1",
     "storybook": "^7.0.27"
-  },
+  }
 }
