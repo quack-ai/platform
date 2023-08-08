@@ -14,21 +14,14 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
-      - uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: "1.5.0"
-      - name: Resolve dependencies
-        run: poetry export -f requirements.txt --without-hashes --output requirements.txt
       - name: Build & run docker
         env:
-          API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_REDIRECT_URI: ${{ secrets.NEXT_PUBLIC_REDIRECT_URI }}
         run: docker-compose up -d --build
       - name: Docker sanity check
-        run: sleep 20 && nc -vz api.localhost 8008
+        run: sleep 20 && nc -vz dashboard.localhost 3000
       - name: Debug
         run: docker-compose logs
       - name: Ping server
-        run: curl http://dashboard.localhost:8008
+        run: curl http://dashboard.localhost:3000

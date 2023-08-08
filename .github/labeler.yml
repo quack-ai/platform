@@ -1,29 +1,42 @@
-'ext: tests':
-- src/tests/*
+"ext: app":
+  - app/*
 
-'ext: scripts':
-- scripts/*
+"ext: lib":
+  - lib/*
 
-'module: app':
-- src/app.py
+"ext: public":
+  - public/*
 
-'topic: build':
-- pyproject.toml
-- poetry.lock
+"ext: styles":
+  - styles/*
 
-'topic: ci':
-- .github/*
+"module: pages":
+  - pages/*
 
-'topic: docker':
-- docker-compose.yml
-- docker-compose.test.yml
-- Dockerfile
-- traefik.yml
+"module: components":
+  - components/*
 
-'topic: documentation':
-- README.md
-- CONTRIBUTING.md
-- CODE_OF_CONDUCT.md
+"topic: build":
+  - package.json
+  - yarn.lock
+  - "*.config.js"
+  - tsconfig.json
 
-'type: code quality':
-- .pre-commit-config.yaml
+"topic: ci":
+  - .github/*
+
+"topic: docker":
+  - docker-compose.yml
+  - docker-compose.test.yml
+  - Dockerfile
+  - traefik.yml
+  - .dockerignore
+
+"topic: documentation":
+  - README.md
+  - CONTRIBUTING.md
+  - CODE_OF_CONDUCT.md
+
+"type: code quality":
+  - .eslintrc.json
+  - .prettierignore

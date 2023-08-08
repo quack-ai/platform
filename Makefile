@@ -1,27 +1,19 @@
 # this target runs checks on all files
 quality:
-	ruff check .
-	mypy
-	black --check .
-	bandit -r . -c pyproject.toml
+	yarn lint:check
+	yarn format:check
 
 # this target runs checks on all files and potentially modifies some of them
 style:
-	black .
-	ruff --fix .
-
-# Pin the dependencies
-lock:
-	poetry lock
+	yarn lint:fix
+	yarn format:fix
 
 # Build the docker
 build:
-	poetry export -f requirements.txt --without-hashes --output requirements.txt
-	docker build . -t quackai/contribution-platform:python3.9-slim
+	docker build . -t quackai/maintainer-platform:node18-alpine3.15
 
 # Run the docker
 run:
-	poetry export -f requirements.txt --without-hashes --output requirements.txt
 	docker compose up -d --build
 
 # Run the docker
