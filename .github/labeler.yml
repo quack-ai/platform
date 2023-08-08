@@ -1,29 +1,29 @@
-'ext: tests':
-- src/tests/*
+"ext: tests":
+  - src/tests/*
 
-'ext: scripts':
-- scripts/*
+"ext: scripts":
+  - scripts/*
 
-'module: app':
-- src/app.py
+"module: app":
+  - src/app.py
 
-'topic: build':
-- pyproject.toml
-- poetry.lock
+"topic: build":
+  - pyproject.toml
+  - poetry.lock
 
-'topic: ci':
-- .github/*
+"topic: ci":
+  - .github/*
 
-'topic: docker':
-- docker-compose.yml
-- docker-compose.test.yml
-- Dockerfile
-- traefik.yml
+"topic: docker":
+  - docker-compose.yml
+  - docker-compose.test.yml
+  - Dockerfile
+  - traefik.yml
 
-'topic: documentation':
-- README.md
-- CONTRIBUTING.md
-- CODE_OF_CONDUCT.md
+"topic: documentation":
+  - README.md
+  - CONTRIBUTING.md
+  - CODE_OF_CONDUCT.md
 
-'type: code quality':
-- .pre-commit-config.yaml
+"type: code quality":
+  - .pre-commit-config.yaml

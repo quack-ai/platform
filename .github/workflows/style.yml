@@ -7,91 +7,33 @@ on:
     branches: main
 
 jobs:
-  ruff:
+  prettier:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python: [3.9]
+        node: [18]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v1
+      - uses: actions/setup-node@v3
         with:
-          python-version: ${{ matrix.python }}
-          architecture: x64
-      - name: Run ruff
+          node-version: ${{ matrix.node }}
+      - name: Run prettier
         run: |
-          pip install "ruff==0.0.278"
-          ruff --version
-          ruff check --diff .
-
-  mypy:
+          yarn add --dev --exact prettier
+          yarn format:check
+  eslint:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python: [3.9]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python }}
-          architecture: x64
-      - uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: "1.5.0"
-      - name: Resolve dependencies
-        run: poetry export -f requirements.txt --without-hashes --output requirements.txt
-      - name: Cache python modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ matrix.python }}-${{ hashFiles('requirements.txt') }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt --upgrade
-          pip install "mypy==1.4.1" types-requests pandas-stubs
-      - name: Run mypy
-        run: |
-          mypy --version
-          mypy
-
-  black:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python: [3.9]
+        node: [18]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - uses: actions/setup-node@v3
         with:
-          python-version: ${{ matrix.python }}
-          architecture: x64
-      - name: Run black
+          node-version: ${{ matrix.node }}
+      - name: Run eslint
         run: |
-          pip install "black==23.3.0"
-          black --version
-          black --check --diff .
-
-  bandit:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python: [3.9]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-          architecture: x64
-      - name: Run bandit
-        run: |
-          pip install bandit[toml]
-          bandit --version
-          bandit -r . -c pyproject.toml
+          yarn add --dev --exact eslint
+          yarn lint:check
