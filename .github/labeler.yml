@@ -1,15 +1,26 @@
-"ext: tests":
-  - src/tests/*
+"ext: app":
+  - app/*
 
-"ext: scripts":
-  - scripts/*
+"ext: lib":
+  - lib/*
 
-"module: app":
-  - src/app.py
+"ext: public":
+  - public/*
+
+"ext: styles":
+  - styles/*
+
+"module: pages":
+  - pages/*
+
+"module: components":
+  - components/*
 
 "topic: build":
-  - pyproject.toml
-  - poetry.lock
+  - package.json
+  - yarn.lock
+  - *.config.js
+  - tsconfig.json
 
 "topic: ci":
   - .github/*
@@ -19,6 +30,7 @@
   - docker-compose.test.yml
   - Dockerfile
   - traefik.yml
+  - .dockerignore
 
 "topic: documentation":
   - README.md
@@ -26,4 +38,6 @@
   - CODE_OF_CONDUCT.md
 
 "type: code quality":
-  - .pre-commit-config.yaml
+  - .eslintrc.json
+  - .prettierignore
+
