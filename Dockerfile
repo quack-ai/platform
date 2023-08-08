@@ -1,20 +1,25 @@
-FROM python:3.9-slim
+FROM node:18-alpine3.15 as builder
 
 WORKDIR /app
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH "${PYTHONPATH}:/app"
+COPY package.json yarn.lock ./
 
-# copy requirements file
-COPY requirements.txt /app/requirements.txt
+RUN yarn install --frozen-lockfile
 
-# install dependencies
-RUN pip install --upgrade --no-cache-dir pip \
-    && pip install --no-cache-dir -r /app/requirements.txt \
-    && pip cache purge \
-    && rm -rf /root/.cache/pip
+COPY . .
 
-# copy project
-COPY src/app.py /app/app.py
+RUN yarn build
+
+FROM node:18-alpine3.15 as runner
+
+WORKDIR /app
+
+COPY --from=builder /app/yarn.lock .
+COPY --from=builder /app/package.json .
+COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+CMD node server.js
+EXPOSE 3000

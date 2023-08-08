@@ -1,23 +1,17 @@
-version: '3.7'
+version: "3.7"
 
 services:
-  dashboard:
-    build: .
-    command: streamlit run /app/app.py --server.port 8008
-    ports:
-      - "8008:8008"
+  frontend:
+    image: quackai/maintainer-platform:node18-alpine3.15
+    command: node server.js
+    container_name: frontend
     environment:
-      - API_ENDPOINT=${API_ENDPOINT}
-      - APP_URI=http://dashboard.localhost:8008
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_REDIRECT_URI=${NEXT_PUBLIC_REDIRECT_URI}
+      - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
+      - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+    ports:
+      - 3000:3000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`dashboard.localhost`)"
-
-  traefik:
-    image: traefik:v2.9.6
-    volumes:
-      - ./traefik.yml:/etc/traefik/traefik.yml"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    ports:
-      - "8050:80"
-      - "8081:8080"
