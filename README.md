@@ -21,8 +21,8 @@
 </p>
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=quackai.quack-companion">
-    <img src="https://img.shields.io/visual-studio-marketplace/v/quackai.quack-companion?logo=visualstudiocode&logoColor=fff&style=flat-square&label=VS%20Marketplace" alt="VS Marketplace">
+  <a href="https://hub.docker.com/repository/docker/quackai/maintainer-platform/general">
+    <img src="https://img.shields.io/docker/v/quackai/maintainer-platform?style=flat-square&logo=Docker&logoColor=fff&label=Docker" alt="Docker image">
   </a>
   <a href="https://github.com/vercel/next.js">
     <img src="https://img.shields.io/badge/Next.js-13-000000?style=flat-square&logo=Next.js&logoColor=white" alt="React">
