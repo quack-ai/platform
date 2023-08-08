@@ -1,7 +1,25 @@
 {
   "name": "maintainer-platform",
   "version": "0.1.0",
-  "private": true,
+  "license": "Apache-2.0",
+  "private": false,
+  "description": "Guideline curation by maintainers for contributors",
+  "author": {
+    "name": "F-G Fernandez",
+    "url": "https://github.com/frgfm"
+  },
+  "keywords": [
+    "ai",
+    "assistant",
+    "contribution",
+    "quackai",
+    "deep learning",
+    "maintainer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quack-ai/maintainer-platform"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
