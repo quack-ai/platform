@@ -1,0 +1,18 @@
+.socialLinks {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem; /* Spacing between social links and the copyright */
+  margin-top: 1rem;
+}
+
+.socialIcon {
+  height: 32px;
+  width: 32px;
+  margin: 0 24px; /* Horizontal margin between icons */
+  cursor: pointer; /* Makes the icon appear clickable */
+  transition: opacity 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.socialIcon:hover {
+  opacity: 0.7; /* Fades the icon slightly when hovered */
+}

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { Dashboard } from "../components/Dashboard";
+import Footer from "../components/Footer";
 import { LeftPanel } from "../components/LeftPanel";
 
 import { Label } from "@/components/ui/label";
@@ -85,37 +86,42 @@ export default function Home() {
   }, [githubToken, authToken]);
 
   return (
-    <div
-      style={{
-        flexDirection: "row",
-        display: "flex",
-        width: "100vw",
-        height: "100vh",
-        top: 0,
-        left: 0,
-      }}
-    >
-      <LeftPanel
-        className="w-[400px] flex-0"
-        authToken={authToken}
-        githubToken={githubToken}
-        selectedRepoId={selectedRepoId}
-        setSelectedRepoId={setSelectedRepoId}
-        setRepoConnected={setRepoConnected}
-        loadingAuth={(authCode || githubToken) && !authToken}
-      />
-      {authToken && repoConnected ? (
-        <Dashboard
-          className="flex-1"
-          selectedRepoId={selectedRepoId}
+    <>
+      <div
+        style={{
+          flexDirection: "row",
+          display: "flex",
+          width: "100vw",
+          height: "80vh",
+          top: 0,
+          left: 0,
+        }}
+      >
+        <LeftPanel
+          className="w-[400px] flex-0"
           authToken={authToken}
-          selectedRepoConnected={repoConnected}
+          githubToken={githubToken}
+          selectedRepoId={selectedRepoId}
+          setSelectedRepoId={setSelectedRepoId}
+          setRepoConnected={setRepoConnected}
+          loadingAuth={(authCode || githubToken) && !authToken}
         />
-      ) : (
-        <Label className="text-2xl w-full h-full items-center justify-center flex">
-          {!authToken ? "Authenticate to Continue" : "Connect Repo to Continue"}
-        </Label>
-      )}
-    </div>
+        {authToken && repoConnected ? (
+          <Dashboard
+            className="flex-1"
+            selectedRepoId={selectedRepoId}
+            authToken={authToken}
+            selectedRepoConnected={repoConnected}
+          />
+        ) : (
+          <Label className="text-2xl w-full h-full items-center justify-center flex">
+            {!authToken
+              ? "Authenticate to Continue"
+              : "Connect Repo to Continue"}
+          </Label>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 }
