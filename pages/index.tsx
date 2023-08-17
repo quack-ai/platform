@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Dashboard } from "../components/Dashboard";
 import Footer from "../components/Footer";
 import { LeftPanel } from "../components/LeftPanel";
+import Navbar from "../components/Navbar";
 
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
@@ -87,6 +88,7 @@ export default function Home() {
 
   return (
     <>
+      <Navbar />
       <div
         style={{
           flexDirection: "row",
