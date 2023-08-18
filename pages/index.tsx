@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -7,18 +6,15 @@ import { Dashboard } from "../components/Dashboard";
 import Footer from "../components/Footer";
 import { LeftPanel } from "../components/LeftPanel";
 import Navbar from "../components/Navbar";
-
-import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/use-toast";
-import { getAxiosErorrMessage } from "@/components/utils";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Label } from "../components/ui/label";
+import { toast } from "../components/ui/use-toast";
+import { getAxiosErorrMessage } from "../components/utils";
 
 export default function Home() {
-  const [authToken, setAuthToken] = useState<any>(null);
-  const [githubToken, setGithubToken] = useState<any>(null);
-  const [selectedRepoId, setSelectedRepoId] = useState<any>(null);
-  const [repoConnected, setRepoConnected] = useState<any>(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [githubToken, setGithubToken] = useState<string | null>(null);
+  const [selectedRepoId, setSelectedRepoId] = useState<number | null>(null);
+  const [repoConnected, setRepoConnected] = useState<boolean>(false);
 
   const router = useRouter();
   const authCode = router.query?.code;

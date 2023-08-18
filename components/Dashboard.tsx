@@ -217,7 +217,7 @@ export const Dashboard = (props: {
                             },
                           },
                         )
-                        .then((res: any) => {
+                        .then((res) => {
                           setNewCreatingGuidline(null);
                           setTriggerGuidelineRefetch(
                             triggerGuidelineRefetch + 1,
@@ -260,7 +260,7 @@ export const Dashboard = (props: {
                             },
                           },
                         )
-                        .then((res: any) => {
+                        .then((res) => {
                           setSelectedGuidelineId(null);
                           setTriggerGuidelineRefetch(
                             triggerGuidelineRefetch + 1,

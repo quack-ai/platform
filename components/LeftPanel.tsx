@@ -24,14 +24,13 @@ import { Label } from "./ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { toast } from "./ui/use-toast";
 import { getAxiosErorrMessage } from "./utils";
-
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 
 export const LeftPanel = (props: {
   className: string;
-  authToken: string;
-  githubToken: string;
-  selectedRepoId: string;
+  authToken: string | null;
+  githubToken: string | null;
+  selectedRepoId: number;
   setSelectedRepoId: any;
   setRepoConnected: any;
   loadingAuth: boolean;
@@ -138,7 +137,6 @@ export const LeftPanel = (props: {
       </CardHeader>
       <CardContent>
         <Link
-          //@ts-ignore
           className={buttonVariants("outline") + " mb-8"}
           href={
             !props.loadingAuth && !props.authToken

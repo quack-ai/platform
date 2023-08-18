@@ -2,8 +2,8 @@ import type { AppProps } from "next/app";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 
-import { Toaster } from "@/components/ui/toaster";
-import "@/styles/globals.css";
+import { Toaster } from "../components/ui/toaster";
+import "../styles/globals.css";
 
 // Check that PostHog is client-side (used to handle Next.js SSR)
 if (typeof window !== "undefined") {
