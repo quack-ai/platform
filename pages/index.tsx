@@ -102,6 +102,7 @@ export default function Home() {
           selectedRepoId={selectedRepoId}
           setSelectedRepoId={setSelectedRepoId}
           setRepoConnected={setRepoConnected}
+          // @ts-ignore
           loadingAuth={(authCode || githubToken) && !authToken}
         />
         {authToken && repoConnected ? (

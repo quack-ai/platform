@@ -34,7 +34,7 @@ import { getAxiosErorrMessage } from "./utils";
 const ReorderableList = (props: {
   onEdit: any;
   authToken: string;
-  selectedRepoId: number;
+  selectedRepoId: number | null;
   guidelines: any;
   loadingGuidelines: boolean;
   setGuidelines: any;
@@ -94,7 +94,7 @@ const ReorderableList = (props: {
 
                   // const x = e.clientX;
                   const y = e.clientY;
-
+                  // @ts-ignore
                   const boundingRect = e.target.getBoundingClientRect();
 
                   const middleY = boundingRect.top + boundingRect.height / 2;

@@ -31,7 +31,7 @@ import { getAxiosErorrMessage } from "./utils.tsx";
 
 export const Dashboard = (props: {
   authToken: string;
-  selectedRepoId: number;
+  selectedRepoId: number | null;
   selectedRepoConnected: boolean;
   className: string;
 }) => {

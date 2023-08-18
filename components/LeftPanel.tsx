@@ -30,7 +30,7 @@ export const LeftPanel = (props: {
   className: string;
   authToken: string | null;
   githubToken: string | null;
-  selectedRepoId: number;
+  selectedRepoId: number | null;
   setSelectedRepoId: any;
   setRepoConnected: any;
   loadingAuth: boolean;
@@ -137,6 +137,7 @@ export const LeftPanel = (props: {
       </CardHeader>
       <CardContent>
         <Link
+          // @ts-ignore
           className={buttonVariants("outline") + " mb-8"}
           href={
             !props.loadingAuth && !props.authToken
