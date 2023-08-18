@@ -1,0 +1,47 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 20px; /* Remove horizontal padding */
+  margin: 0; /* Add this to reset margin */
+  background-color: #ffffff;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Add this to ensure it takes the full width */
+  max-height: 10vh;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 64px;
+  margin-right: 1rem;
+}
+
+.companyName {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #9038ff;
+  font-family: "Helvetica", "Arial", sans-serif; /* Updated the font family */
+}
+
+.ctaButton {
+  /* This pushes the button to the far right */
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .companyName {
+    font-size: 1.5rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .github-button {
+    font-size: 0.8rem;
+    padding: 5px 8px;
+  }
+}

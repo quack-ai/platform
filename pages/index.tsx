@@ -1,22 +1,20 @@
 import axios from "axios";
-import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { Dashboard } from "../components/Dashboard";
+import Footer from "../components/Footer";
 import { LeftPanel } from "../components/LeftPanel";
-
-import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/use-toast";
-import { getAxiosErorrMessage } from "@/components/utils";
-
-const inter = Inter({ subsets: ["latin"] });
+import Navbar from "../components/Navbar";
+import { Label } from "../components/ui/label";
+import { toast } from "../components/ui/use-toast";
+import { getAxiosErorrMessage } from "../components/utils";
 
 export default function Home() {
-  const [authToken, setAuthToken] = useState<any>(null);
-  const [githubToken, setGithubToken] = useState<any>(null);
-  const [selectedRepoId, setSelectedRepoId] = useState<any>(null);
-  const [repoConnected, setRepoConnected] = useState<any>(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [githubToken, setGithubToken] = useState<string | null>(null);
+  const [selectedRepoId, setSelectedRepoId] = useState<number | null>(null);
+  const [repoConnected, setRepoConnected] = useState<boolean>(false);
 
   const router = useRouter();
   const authCode = router.query?.code;
@@ -85,37 +83,44 @@ export default function Home() {
   }, [githubToken, authToken]);
 
   return (
-    <div
-      style={{
-        flexDirection: "row",
-        display: "flex",
-        width: "100vw",
-        height: "100vh",
-        top: 0,
-        left: 0,
-      }}
-    >
-      <LeftPanel
-        className="w-[400px] flex-0"
-        authToken={authToken}
-        githubToken={githubToken}
-        selectedRepoId={selectedRepoId}
-        setSelectedRepoId={setSelectedRepoId}
-        setRepoConnected={setRepoConnected}
-        loadingAuth={(authCode || githubToken) && !authToken}
-      />
-      {authToken && repoConnected ? (
-        <Dashboard
-          className="flex-1"
-          selectedRepoId={selectedRepoId}
+    <>
+      <Navbar />
+      <div
+        style={{
+          flexDirection: "row",
+          display: "flex",
+          width: "100vw",
+          height: "80vh",
+          top: 0,
+          left: 0,
+        }}
+      >
+        <LeftPanel
+          className="w-[400px] flex-0"
           authToken={authToken}
-          selectedRepoConnected={repoConnected}
+          githubToken={githubToken}
+          selectedRepoId={selectedRepoId}
+          setSelectedRepoId={setSelectedRepoId}
+          setRepoConnected={setRepoConnected}
+          // @ts-ignore
+          loadingAuth={(authCode || githubToken) && !authToken}
         />
-      ) : (
-        <Label className="text-2xl w-full h-full items-center justify-center flex">
-          {!authToken ? "Authenticate to Continue" : "Connect Repo to Continue"}
-        </Label>
-      )}
-    </div>
+        {authToken && repoConnected ? (
+          <Dashboard
+            className="flex-1"
+            selectedRepoId={selectedRepoId}
+            authToken={authToken}
+            selectedRepoConnected={repoConnected}
+          />
+        ) : (
+          <Label className="text-2xl w-full h-full items-center justify-center flex">
+            {!authToken
+              ? "Authenticate to Continue"
+              : "Connect Repo to Continue"}
+          </Label>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 }

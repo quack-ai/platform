@@ -17,12 +17,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog.tsx";
-import { Button } from "./ui/button.tsx";
-import { toast } from "./ui/use-toast.ts";
-import { getAxiosErorrMessage } from "./utils.tsx";
-
-import { Card, CardContent } from "@/components/ui/card";
+} from "./ui/alert-dialog";
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
 import {
   Table,
   TableCaption,
@@ -30,12 +27,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "./ui/table";
+import { toast } from "./ui/use-toast";
+import { getAxiosErorrMessage } from "./utils";
 
 const ReorderableList = (props: {
   onEdit: any;
   authToken: string;
-  selectedRepoId: number;
+  selectedRepoId: number | null;
   guidelines: any;
   loadingGuidelines: boolean;
   setGuidelines: any;
@@ -93,9 +92,8 @@ const ReorderableList = (props: {
 
                   e.preventDefault();
 
-                  const x = e.clientX;
+                  // const x = e.clientX;
                   const y = e.clientY;
-
                   // @ts-ignore
                   const boundingRect = e.target.getBoundingClientRect();
 
@@ -114,8 +112,9 @@ const ReorderableList = (props: {
                   setHighlightAboveId(null);
                 }}
                 onDrop={(e) => {
-                  // @ts-ignore
-                  const droppedId = Number(e.dataTransfer.getData("id"));
+                  const droppedId: number = Number(
+                    e.dataTransfer.getData("id"),
+                  );
 
                   if (droppedId === guideline.id) {
                     return;
