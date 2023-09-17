@@ -11,7 +11,7 @@ if (typeof window !== "undefined") {
   if (posthogKey) {
     posthog.init(posthogKey, {
       api_host:
-        process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://app.posthog.com",
+        process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.posthog.com",
       // Enable debug mode in development
       loaded: (posthog) => {
         if (process.env.NODE_ENV === "development") posthog.debug();
