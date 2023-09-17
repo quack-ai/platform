@@ -53,32 +53,44 @@ export const LeftPanel = (props: {
     return repo.id === props.selectedRepoId;
   });
 
+  const fetchRepos = (page: number) => {
+    axios
+      .get("https://api.github.com/user/repos", {
+        params: {
+          affiliation: "owner,collaborator,organization_member",
+          visibility: "public",
+          page: page,
+          per_page: 100,
+          sort: "updated",
+          direction: "desc",
+        },
+        headers: {
+          Authorization: "Bearer " + props.githubToken,
+        },
+      })
+      .then((response) => {
+        if (response.data.length > 0) {
+          setGithubRepos((prevRepos: any) => [...prevRepos, ...response.data]);
+          // Fetch the next page
+          if (response.data.length === 100) {
+            fetchRepos(page + 1);
+          }
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        toast({
+          variant: "destructive",
+          title: "Could not fetch repos from Github",
+          description: getAxiosErorrMessage(e).toString(),
+        });
+      });
+  };
+
   useEffect(() => {
     if (props.githubToken) {
       // Fetch repos
-      axios
-        .get("https://api.github.com/user/repos", {
-          params: {
-            affiliation: "owner",
-            visibility: "public",
-            per_page: 100,
-          },
-          headers: {
-            Authorization: "Bearer " + props.githubToken,
-          },
-        })
-        .then((res: any) => {
-          setGithubRepos(res.data);
-        })
-        .catch((e) => {
-          setGithubRepos([]);
-          console.error(e);
-          toast({
-            variant: "destructive",
-            title: "Could not fetch repos from Github",
-            description: getAxiosErorrMessage(e).toString(),
-          });
-        });
+      fetchRepos(1);
       // Identify user
       axios
         .get("https://api.github.com/user", {
