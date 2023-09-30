@@ -123,8 +123,8 @@ export default function Home() {
         ) : (
           <Label className="text-2xl w-full h-full items-center justify-center flex">
             {!authToken
-              ? "Authenticate to Continue"
-              : "Connect Repo to Continue"}
+              ? "Authenticate to continue"
+              : "Select a repo to continue"}
           </Label>
         )}
       </div>

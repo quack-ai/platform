@@ -150,11 +150,13 @@ export const LeftPanel = (props: {
       </CardHeader>
       <CardContent>
         <Link
-          // @ts-ignore
           className={
-            buttonVariants({ variant: "outline" }) +
+            // @ts-ignore
+            buttonVariants("outline") +
             " mb-8" +
-            (props.loadingAuth ? " unclickable" : "")
+            (props.loadingAuth || props.authToken
+              ? ` ${styles.unclickable}`
+              : "")
           }
           href={
             !props.loadingAuth && !props.authToken
