@@ -102,9 +102,7 @@ export const Dashboard = (props: {
               <ArrowLeftIcon />
             </Button>
           )}
-          <CardTitle className="text-4xl mb-4">
-            Guideline Management Dashboard
-          </CardTitle>
+          <CardTitle className="text-4xl mb-4">Guideline Management</CardTitle>
           {!selectedGuideline && (
             <Button
               className="mr-4"

@@ -25,6 +25,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { toast } from "./ui/use-toast";
 import { getAxiosErorrMessage } from "./utils";
 import { cn } from "../lib/utils";
+import styles from "../styles/LeftPanel.module.css";
 
 export const LeftPanel = (props: {
   className: string;
@@ -150,7 +151,11 @@ export const LeftPanel = (props: {
       <CardContent>
         <Link
           // @ts-ignore
-          className={buttonVariants("outline") + " mb-8"}
+          className={
+            buttonVariants({ variant: "outline" }) +
+            " mb-8" +
+            (props.loadingAuth ? " unclickable" : "")
+          }
           href={
             !props.loadingAuth && !props.authToken
               ? `${process.env.NEXT_PUBLIC_API_URL}/login/authorize?scope=read:user%20user:email%20repo&redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URI}`
