@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookie from "js-cookie";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -20,7 +21,8 @@ export default function Home() {
   const authCode = router.query?.code;
 
   useEffect(() => {
-    if (authCode && !githubToken) {
+    const storedToken = Cookie.get("githubToken");
+    if (authCode && !storedToken && !githubToken) {
       // Get github token
       axios
         .post(`${process.env.NEXT_PUBLIC_API_URL}/login/github`, {
@@ -30,7 +32,8 @@ export default function Home() {
         .then(({ data }) => {
           if (data?.access_token) {
             setGithubToken(data?.access_token);
-
+            // 7 days expiration cookie
+            Cookie.set("githubToken", data?.access_token, { expires: 7 });
             router.replace("", undefined, { shallow: true });
           } else {
             console.log("No access token");
@@ -49,11 +52,14 @@ export default function Home() {
           });
           console.log(e);
         });
+    } else if (storedToken) {
+      setGithubToken(storedToken);
     }
   }, [authCode]);
 
   useEffect(() => {
-    if (githubToken && !authToken) {
+    const storedToken = Cookie.get("authToken");
+    if (githubToken && !authToken && !storedToken) {
       // Get repos
       axios
         .post(`${process.env.NEXT_PUBLIC_API_URL}/login/token`, {
@@ -62,6 +68,7 @@ export default function Home() {
         .then(({ data }) => {
           if (data?.access_token) {
             setAuthToken(data?.access_token);
+            Cookie.set("authToken", data?.access_token, { expires: 7 });
           } else {
             console.log("No access token for backend");
             toast({
@@ -79,6 +86,8 @@ export default function Home() {
           });
           console.log(e);
         });
+    } else if (storedToken) {
+      setAuthToken(storedToken);
     }
   }, [githubToken, authToken]);
 
