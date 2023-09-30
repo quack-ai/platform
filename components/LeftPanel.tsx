@@ -154,7 +154,9 @@ export const LeftPanel = (props: {
             // @ts-ignore
             buttonVariants("outline") +
             " mb-8" +
-            (props.loadingAuth ? ` ${styles.unclickable}` : "")
+            (props.loadingAuth || props.authToken
+              ? ` ${styles.unclickable}`
+              : "")
           }
           href={
             !props.loadingAuth && !props.authToken
