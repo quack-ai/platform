@@ -66,6 +66,10 @@
 
     --ring: 217.2 32.6% 17.5%;
   }
+  body {
+    font-family: var(--fontFamily-Poppins);
+    height: 100vh;
+  }
 }
 
 :root {
