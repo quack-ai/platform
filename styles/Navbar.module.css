@@ -2,12 +2,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 20px; /* Remove horizontal padding */
-  margin: 0; /* Add this to reset margin */
-  background-color: #ffffff;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Add this to ensure it takes the full width */
-  max-height: 10vh;
+  padding: 0.5rem 3%;
+  margin: 0;
+  /* width: 100%; */
+  max-height: 9vh;
+
+  /* Glassmorphism styling */
+  background-color: rgba(200, 200, 200, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  /* Shadows and border */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  /* border-radius: 12px; */
 }
 
 .logoSection {
@@ -24,7 +31,8 @@
   font-size: 2.5rem;
   font-weight: bold;
   color: #9038ff;
-  font-family: "Helvetica", "Arial", sans-serif; /* Updated the font family */
+  font-family: "Poppins", "Segoe UI", "ui-sans-serif", "Helvetica", "Arial",
+    sans-serif;
 }
 
 .ctaButton {
@@ -36,12 +44,5 @@
   .companyName {
     font-size: 1.5rem;
     white-space: nowrap;
-  }
-}
-
-@media (max-width: 768px) {
-  .github-button {
-    font-size: 0.8rem;
-    padding: 5px 8px;
   }
 }

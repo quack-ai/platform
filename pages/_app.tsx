@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 
@@ -23,6 +24,10 @@ if (typeof window !== "undefined") {
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <PostHogProvider client={posthog}>
+      <Head>
+        <title>Quack AI - Guideline management</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
       <Component {...pageProps} />
       <Toaster />
     </PostHogProvider>
