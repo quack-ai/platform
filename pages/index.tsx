@@ -89,8 +89,7 @@ export default function Home() {
         style={{
           flexDirection: "row",
           display: "flex",
-          width: "100vw",
-          height: "80vh",
+          height: "83vh",
           top: 0,
           left: 0,
         }}
