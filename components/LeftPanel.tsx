@@ -152,7 +152,7 @@ export const LeftPanel = (props: {
         <Link
           // @ts-ignore
           className={
-            buttonVariants("outline") +
+            buttonVariants({ variant: "outline" }) +
             " mb-8" +
             (props.loadingAuth ? " unclickable" : "")
           }
