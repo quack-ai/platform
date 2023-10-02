@@ -1,8 +1,9 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 
+import { ChatwootWidget } from "../components/ChatwootWidget.tsx";
 import { Toaster } from "../components/ui/toaster";
 import "../styles/globals.css";
 
@@ -28,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Quack AI - Guideline management</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
+      <ChatwootWidget />
       <Component {...pageProps} />
       <Toaster />
     </PostHogProvider>
