@@ -9,11 +9,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build docker
-        run: docker build . -t quackai/maintainer-platform:latest
+        run: docker build . -t quackai/platform:latest
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: quackai
           password: ${{ secrets.DOCKERHUB_PW }}
       - name: Push to hub
-        run: docker push quackai/maintainer-platform:latest
+        run: docker push quackai/platform:latest

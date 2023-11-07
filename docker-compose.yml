@@ -2,14 +2,13 @@ version: "3.7"
 
 services:
   frontend:
-    image: quackai/maintainer-platform:node18-alpine3.15
+    image: quackai/platform:node18-alpine3.15
     command: node server.js
     container_name: frontend
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       - NEXT_PUBLIC_REDIRECT_URI=${NEXT_PUBLIC_REDIRECT_URI}
       - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
-      - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
       - NEXT_PUBLIC_CHATWOOT_ENDPOINT=${NEXT_PUBLIC_CHATWOOT_ENDPOINT}
       - NEXT_PUBLIC_CHATWOOT_TOKEN=${NEXT_PUBLIC_CHATWOOT_TOKEN}
     ports:
