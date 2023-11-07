@@ -13,8 +13,8 @@ Closes # (issue)
 
 ## Before submitting
 
-- [ ] Was this discussed/approved in a Github [issue](https://github.com/quack-ai/maintainer-platform/issues?q=is%3Aissue) or a [discussion](https://github.com/quack-ai/maintainer-platform/discussions)? Please add a link to it if that's the case.
-- [ ] You have read the [maintainer guidelines](https://github.com/quack-ai/maintainer-platform/blob/main/CONTRIBUTING.md#submitting-a-pull-request) and followed them in this PR.
+- [ ] Was this discussed/approved in a Github [issue](https://github.com/quack-ai/platform/issues?q=is%3Aissue) or a [discussion](https://github.com/quack-ai/platform/discussions)? Please add a link to it if that's the case.
+- [ ] You have read the [maintainer guidelines](https://github.com/quack-ai/platform/blob/main/CONTRIBUTING.md#submitting-a-pull-request) and followed them in this PR.
 - [ ] Did you make sure to update the documentation with your changes? Here are the
-      [documentation guidelines](https://github.com/quack-ai/maintainer-platform/tree/main/docs).
+      [documentation guidelines](https://github.com/quack-ai/platform/tree/main/docs).
 - [ ] Did you write any new necessary tests?

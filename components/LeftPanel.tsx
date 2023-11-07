@@ -277,13 +277,13 @@ export const LeftPanel = (props: {
               variant="secondary"
               className="mb-8"
               onClick={() => {
-                const disabled = connectedRepo.removed_at;
+                const enabled = connectedRepo.is_active;
 
                 axios
                   .put(
                     `${process.env.NEXT_PUBLIC_API_URL}/repos/${
                       connectedRepo.id
-                    }/${disabled ? "enable" : "disable"}`,
+                    }/${enabled ? "disabled" : "enable"}`,
                     {},
                     {
                       headers: {
@@ -304,7 +304,7 @@ export const LeftPanel = (props: {
                   });
               }}
             >
-              {connectedRepo?.removed_at ? "Enable Repo" : "Disable Repo"}
+              {connectedRepo?.is_active ? "Disable Repo" : "Enable Repo"}
             </Button>
           )}
         </div>

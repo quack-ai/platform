@@ -1,5 +1,5 @@
 {
-  "name": "maintainer-platform",
+  "name": "quack-platform",
   "version": "0.1.0",
   "license": "Apache-2.0",
   "private": false,
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/quack-ai/maintainer-platform"
+    "url": "https://github.com/quack-ai/platform"
   },
   "scripts": {
     "dev": "next dev",
@@ -37,7 +37,6 @@
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-popover": "^1.0.6",
     "@radix-ui/react-toast": "^1.1.4",
-    "@sentry/node": "^7.61.1",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "class-variance-authority": "^0.6.1",

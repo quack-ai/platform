@@ -6,8 +6,8 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/quack-ai/maintainer-platform/actions/workflows/builds.yml">
-    <img alt="CI Status" src="https://img.shields.io/github/actions/workflow/status/quack-ai/maintainer-platform/builds.yml?branch=main&label=CI&logo=github&style=flat-square">
+  <a href="https://github.com/quack-ai/platform/actions/workflows/builds.yml">
+    <img alt="CI Status" src="https://img.shields.io/github/actions/workflow/status/quack-ai/platform/builds.yml?branch=main&label=CI&logo=github&style=flat-square">
   </a>
   <a href="https://github.com/eslint/eslint">
     <img src="https://img.shields.io/badge/Linter-ESLint-4B32C3?style=flat-square&logo=ESLint&logoColor=white" alt="eslint">
@@ -21,13 +21,13 @@
 </p>
 
 <p align="center">
-  <a href="https://hub.docker.com/repository/docker/quackai/maintainer-platform/general">
-    <img src="https://img.shields.io/docker/v/quackai/maintainer-platform?style=flat-square&logo=Docker&logoColor=fff&label=Docker" alt="Docker image">
+  <a href="https://hub.docker.com/repository/docker/quackai/platform/general">
+    <img src="https://img.shields.io/docker/v/quackai/platform?style=flat-square&logo=Docker&logoColor=fff&label=Docker" alt="Docker image">
   </a>
   <a href="https://github.com/vercel/next.js">
     <img src="https://img.shields.io/badge/Next.js-13-000000?style=flat-square&logo=Next.js&logoColor=white" alt="React">
   </a>
-  <a href="https://github.com/quack-ai/maintainer-platform/blob/main/LICENSE">
+  <a href="https://github.com/quack-ai/platform/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-Apache 2.0-blue?style=flat-square" alt="license">
   </a>
 </p>
@@ -58,7 +58,7 @@ make run
 
 You can now navigate to [`http://dashboard.localhost:3000`](http://dashboard.localhost:3000) to interact with the [Next JS](https://nextjs.org/) app.
 
-![screenshot](https://github.com/quack-ai/maintainer-platform/releases/download/v0.0.1/next-platform.png)
+![screenshot](https://github.com/quack-ai/platform/releases/download/v0.0.1/next-platform.png)
 
 In order to stop the service, run:
 
@@ -87,7 +87,6 @@ This file will have to hold the following information:
 Optionally, the following information can be added:
 
 - `NEXT_PUBLIC_POSTHOG_KEY`: the name of the [PostgreSQL](https://www.postgresql.org/) database that will be created.
-- `NEXT_PUBLIC_SENTRY_DSN`: the URL of the [Sentry](https://sentry.io/) project, which monitors back-end errors and report them back.
 
 So your `.env` file should look like something similar to:
 
@@ -95,7 +94,6 @@ So your `.env` file should look like something similar to:
 NEXT_PUBLIC_API_URL=http://your-quack-api-host.com/api/v1
 NEXT_PUBLIC_REDIRECT_URI=http://localhost:3000/
 NEXT_PUBLIC_POSTHOG_KEY=phc_my_api_key
-NEXT_PUBLIC_SENTRY_DSN='https://replace.with.you.sentry.dsn/'
 ```
 
 The file should be placed at the root folder of your local copy of the project.
