@@ -56,7 +56,7 @@ You can run the API containers using this command:
 make run
 ```
 
-You can now navigate to [`http://dashboard.localhost:3000`](http://dashboard.localhost:3000) to interact with the [Next JS](https://nextjs.org/) app.
+You can now navigate to [`http://localhost:3000`](http://localhost:3000) to interact with the [Next JS](https://nextjs.org/) app.
 
 ![screenshot](https://github.com/quack-ai/platform/releases/download/v0.0.1/next-platform.png)
 
