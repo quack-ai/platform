@@ -3,9 +3,9 @@ import { Head, Html, Main, NextScript } from "next/document";
 const metaTitle = "Quack AI - Guideline management";
 const metaDescription =
   "Management dashboard to curate the guidelines for your contributors.";
-const metaUrl = "https://app.quack-ai.com/";
+const metaUrl = "https://app.quackai.com/";
 const metaBanner =
-  "https://github.com/quack-ai/contribution-platform/releases/download/v0.0.1/quack-logo-enlarged.png";
+  "https://github.com/quack-ai/platform/releases/download/v0.0.1/quack-logo-enlarged.png";
 
 export default function Document() {
   return (
