@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   frontend:
-    image: quackai/platform:node18-alpine3.15
+    build: .
     command: node server.js
     container_name: frontend
     environment:
