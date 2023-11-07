@@ -6,3 +6,8 @@ README.md
 .dockerignore
 .git
 docker-compose.yml
+Makefile
+traefik.toml
+README.md
+LICENSE
+CONTRIBUTING.md
