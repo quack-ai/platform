@@ -5,9 +5,11 @@ node_modules
 README.md
 .dockerignore
 .git
+.github
 docker-compose.yml
 Makefile
 traefik.toml
-README.md
 LICENSE
 CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+.prettierignore
