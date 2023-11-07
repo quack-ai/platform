@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PW }}
       - name: Push to hub
         run: docker push quackai/platform:latest
-  
+
   deploy-dev:
     needs: dockerhub
     runs-on: ubuntu-latest
