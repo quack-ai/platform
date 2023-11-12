@@ -38,7 +38,7 @@
     "@radix-ui/react-popover": "^1.0.6",
     "@radix-ui/react-toast": "^1.1.4",
     "autoprefixer": "10.4.14",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "class-variance-authority": "^0.6.1",
     "cmdk": "^0.2.0",
     "js-cookie": "^3.0.5",
