@@ -207,9 +207,7 @@ export const Dashboard = (props: {
                 ) : (
                   <LightningBoltIcon className="mr-1" />
                 )}
-                {parsingGuidelines
-                  ? "Parsing Guidelines..."
-                  : "Parse Guidelines"}
+                {parsingGuidelines ? "Parsing Guidelines..." : "Parse Repo"}
               </Button>
             </div>
           )}
