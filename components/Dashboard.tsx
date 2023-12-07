@@ -31,6 +31,14 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog.tsx";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
@@ -44,6 +52,9 @@ export const Dashboard = (props: {
   className: string;
 }) => {
   const [selectedGuidelineId, setSelectedGuidelineId] = useState(null);
+  const [generatingExamples, setGeneratingExamples] = useState(false);
+  const [positiveExample, setPositiveExample] = useState(null);
+  const [negativeExample, setNegativeExample] = useState(null);
 
   const [guidelines, setGuidelines] = useState<any[]>([]);
   const [loadingGuidelines, setLoadingGuidelines] = useState(false);
@@ -313,14 +324,70 @@ export const Dashboard = (props: {
                 <CheckIcon className="mr-1" />
                 {newCreatingGuidline ? "Create Guideline" : "Save Guideline"}
               </Button>
-              <Button
-                variant={"outline"}
-                className="mb-4 mr-4"
-                onClick={() => {}}
-              >
-                <MagicWandIcon className="mr-1" />
-                Generate examples
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className="mb-4"
+                    onClick={() => {
+                      setGeneratingExamples(true);
+                      // Request API
+                      console.log("API request");
+                      axios
+                        .post(
+                          `${process.env.NEXT_PUBLIC_API_URL}/guidelines/examples`,
+                          {
+                            language: "python",
+                            content: selectedGuideline.details,
+                          },
+                          {
+                            headers: {
+                              Authorization: "Bearer " + props.authToken,
+                            },
+                          },
+                        )
+                        .then((res: any) => {
+                          // Display positive and negative examples
+                          console.log(res.data);
+                          setPositiveExample(res.data.positive);
+                          setNegativeExample(res.data.negative);
+                          setGeneratingExamples(false);
+                        })
+                        .catch((e) => {
+                          console.error(e);
+                          setGeneratingExamples(false);
+                        });
+                    }}
+                  >
+                    <MagicWandIcon className="mr-1" />
+                    Generate examples
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Guideline examples</DialogTitle>
+                    <DialogDescription>
+                      Here are code examples for this guideline
+                    </DialogDescription>
+                  </DialogHeader>
+                  <label className="Label" htmlFor="name">
+                    Positive example
+                  </label>
+                  {generatingExamples ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <pre className="MultiLineCode">{positiveExample}</pre>
+                  )}
+                  <label className="Label" htmlFor="name">
+                    Negative example
+                  </label>
+                  {generatingExamples ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <pre className="MultiLineCode">{negativeExample}</pre>
+                  )}
+                </DialogContent>
+              </Dialog>
               {!newCreatingGuidline && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -376,7 +443,11 @@ export const Dashboard = (props: {
         </div>
         {!selectedGuideline && (
           <ReorderableList
-            onEdit={(g: any) => setSelectedGuidelineId(g.id)}
+            onEdit={(g: any) => {
+              setSelectedGuidelineId(g.id);
+              setPositiveExample(null);
+              setNegativeExample(null);
+            }}
             guidelines={guidelines}
             loadingGuidelines={loadingGuidelines}
             setGuidelines={(newGuidelines: any) => {
