@@ -88,9 +88,9 @@
 
 .MultiLineCode {
   font-family: monospace;
-  background-color: #f5f5f5;
-  color: black;
+  background-color: rgb(0, 80, 80);
+  color: white;
   padding: 8px;
   border-radius: 4px;
-  white-space: pre-wrap; /* To ensure long lines are wrapped */
+  white-space: pre-wrap;
 }
