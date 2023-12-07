@@ -1,4 +1,12 @@
-import { ArrowLeftIcon, PlusIcon, ReloadIcon } from "@radix-ui/react-icons";
+import {
+  ArrowLeftIcon,
+  CheckIcon,
+  LightningBoltIcon,
+  MagicWandIcon,
+  PlusIcon,
+  ReloadIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -23,19 +31,48 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog.tsx";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast.ts";
 import { getAxiosErorrMessage } from "./utils.tsx";
 
+interface GuidelineCreation {
+  order: number;
+  title: string;
+  details: string;
+  repo_id: number;
+}
+
+interface ParsedGuideline {
+  repo_id: number;
+  origin_path: string;
+  title: string;
+  details: string;
+}
+
 export const Dashboard = (props: {
+  githubToken: string;
   authToken: string;
   selectedRepoId: number | null;
   selectedRepoConnected: boolean;
   className: string;
 }) => {
   const [selectedGuidelineId, setSelectedGuidelineId] = useState(null);
+  // Parsing
+  const [parsingGuidelines, setParsingGuidelines] = useState(false);
+  // Examples
+  const [generatingExamples, setGeneratingExamples] = useState(false);
+  const [positiveExample, setPositiveExample] = useState(null);
+  const [negativeExample, setNegativeExample] = useState(null);
 
   const [guidelines, setGuidelines] = useState<any[]>([]);
   const [loadingGuidelines, setLoadingGuidelines] = useState(false);
@@ -55,6 +92,64 @@ export const Dashboard = (props: {
   const selectedGuideline =
     guidelines.find((guideline: any) => guideline.id === selectedGuidelineId) ||
     newCreatingGuidline;
+
+  async function registerGuideline(guideline: GuidelineCreation) {
+    axios
+      .post(`${process.env.NEXT_PUBLIC_API_URL}/guidelines/`, guideline, {
+        headers: {
+          Authorization: "Bearer " + props.authToken,
+        },
+      })
+      .then((res) => {})
+      .catch((e) => {
+        toast({
+          variant: "destructive",
+          title: "Could not create new guideline",
+          description: getAxiosErorrMessage(e).toString(),
+        });
+      });
+  }
+
+  const onParse = async () => {
+    setParsingGuidelines(true);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_URL}/repos/${props.selectedRepoId}/parse`,
+        {
+          github_token: props.githubToken,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + props.authToken,
+          },
+        },
+      )
+      .then((res: any) => {
+        console.log(res.data);
+        // Remove unused information
+        const parsedGuidelines = res.data.map((g: ParsedGuideline) => ({
+          title: g.title,
+          details: g.details,
+        }));
+        // Add guidelines to table
+        setGuidelines([...guidelines, ...parsedGuidelines]);
+        // API request
+        const initIndex = guidelines.length;
+        res.data.map((g: ParsedGuideline, index: number) =>
+          registerGuideline({
+            // @ts-ignore
+            repo_id: props.selectedRepoId,
+            order: initIndex + index,
+            title: g.title,
+            details: g.details,
+          }),
+        );
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+    setParsingGuidelines(false);
+  };
 
   useEffect(() => {
     setGuidelines([]);
@@ -104,18 +199,32 @@ export const Dashboard = (props: {
           )}
           <CardTitle className="text-4xl mb-4">Guideline Management</CardTitle>
           {!selectedGuideline && (
-            <Button
-              className="mr-4"
-              onClick={() => {
-                setNewCreatingGuidline({
-                  title: "",
-                  details: "",
-                });
-              }}
-            >
-              <PlusIcon className="mr-1" />
-              Create Guideline
-            </Button>
+            <div>
+              <Button
+                className="mr-4"
+                onClick={() => {
+                  setNewCreatingGuidline({
+                    title: "",
+                    details: "",
+                  });
+                }}
+              >
+                <PlusIcon className="mr-1" />
+                Create Guideline
+              </Button>
+              <Button
+                className="mr-4"
+                disabled={parsingGuidelines}
+                onClick={onParse}
+              >
+                {parsingGuidelines ? (
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <LightningBoltIcon className="mr-1" />
+                )}
+                {parsingGuidelines ? "Parsing Guidelines..." : "Parse Repo"}
+              </Button>
+            </div>
           )}
         </div>
       </CardHeader>
@@ -288,12 +397,76 @@ export const Dashboard = (props: {
                 {savingGuideline && (
                   <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 )}
+                <CheckIcon className="mr-1" />
                 {newCreatingGuidline ? "Create Guideline" : "Save Guideline"}
               </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className="mb-4"
+                    onClick={() => {
+                      setGeneratingExamples(true);
+                      // Request API
+                      axios
+                        .post(
+                          `${process.env.NEXT_PUBLIC_API_URL}/guidelines/examples`,
+                          {
+                            language: "python",
+                            content: selectedGuideline.details,
+                          },
+                          {
+                            headers: {
+                              Authorization: "Bearer " + props.authToken,
+                            },
+                          },
+                        )
+                        .then((res: any) => {
+                          // Display positive and negative examples
+                          setPositiveExample(res.data.positive);
+                          setNegativeExample(res.data.negative);
+                          setGeneratingExamples(false);
+                        })
+                        .catch((e) => {
+                          console.error(e);
+                          setGeneratingExamples(false);
+                        });
+                    }}
+                  >
+                    <MagicWandIcon className="mr-1" />
+                    Generate examples
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Guideline examples</DialogTitle>
+                    <DialogDescription>
+                      Here are code examples for this guideline
+                    </DialogDescription>
+                  </DialogHeader>
+                  <label className="Label" htmlFor="name">
+                    Positive example
+                  </label>
+                  {generatingExamples ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <pre className="MultiLineCode">{positiveExample}</pre>
+                  )}
+                  <label className="Label" htmlFor="name">
+                    Negative example
+                  </label>
+                  {generatingExamples ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <pre className="MultiLineCode">{negativeExample}</pre>
+                  )}
+                </DialogContent>
+              </Dialog>
               {!newCreatingGuidline && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant={"outline"} className="mb-4">
+                      <TrashIcon className="mr-1" />
                       Delete Guideline
                     </Button>
                   </AlertDialogTrigger>
@@ -344,7 +517,11 @@ export const Dashboard = (props: {
         </div>
         {!selectedGuideline && (
           <ReorderableList
-            onEdit={(g: any) => setSelectedGuidelineId(g.id)}
+            onEdit={(g: any) => {
+              setSelectedGuidelineId(g.id);
+              setPositiveExample(null);
+              setNegativeExample(null);
+            }}
             guidelines={guidelines}
             loadingGuidelines={loadingGuidelines}
             setGuidelines={(newGuidelines: any) => {

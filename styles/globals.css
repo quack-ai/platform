@@ -85,3 +85,12 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+
+.MultiLineCode {
+  font-family: monospace;
+  background-color: rgb(0, 80, 80);
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
