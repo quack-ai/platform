@@ -46,12 +46,16 @@ import { toast } from "./ui/use-toast.ts";
 import { getAxiosErorrMessage } from "./utils.tsx";
 
 export const Dashboard = (props: {
+  githubToken: string;
   authToken: string;
   selectedRepoId: number | null;
   selectedRepoConnected: boolean;
   className: string;
 }) => {
   const [selectedGuidelineId, setSelectedGuidelineId] = useState(null);
+  // Parsing
+  const [parsingGuidelines, setParsingGuidelines] = useState(false);
+  // Examples
   const [generatingExamples, setGeneratingExamples] = useState(false);
   const [positiveExample, setPositiveExample] = useState(null);
   const [negativeExample, setNegativeExample] = useState(null);
@@ -74,6 +78,63 @@ export const Dashboard = (props: {
   const selectedGuideline =
     guidelines.find((guideline: any) => guideline.id === selectedGuidelineId) ||
     newCreatingGuidline;
+
+  async function registerGuideline(guideline) {
+    axios
+      .post(`${process.env.NEXT_PUBLIC_API_URL}/guidelines/`, guideline, {
+        headers: {
+          Authorization: "Bearer " + props.authToken,
+        },
+      })
+      .then((res) => {})
+      .catch((e) => {
+        toast({
+          variant: "destructive",
+          title: "Could not create new guideline",
+          description: getAxiosErorrMessage(e).toString(),
+        });
+      });
+  }
+
+  const onParse = async () => {
+    setParsingGuidelines(true);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_URL}/repos/${props.selectedRepoId}/parse`,
+        {
+          github_token: props.githubToken,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + props.authToken,
+          },
+        },
+      )
+      .then((res: any) => {
+        console.log(res.data);
+        // Remove unused information
+        const parsedGuidelines = res.data.map(({ title, details }) => ({
+          title,
+          details,
+        }));
+        // Add guidelines to table
+        setGuidelines([...guidelines, ...parsedGuidelines]);
+        // API request
+        const initIndex = guidelines.length;
+        res.data.map((g, index: number) =>
+          registerGuideline({
+            repo_id: props.selectedRepoId,
+            order: initIndex + index,
+            title: g.title,
+            details: g.details,
+          }),
+        );
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+    setParsingGuidelines(false);
+  };
 
   useEffect(() => {
     setGuidelines([]);
@@ -138,15 +199,17 @@ export const Dashboard = (props: {
               </Button>
               <Button
                 className="mr-4"
-                onClick={() => {
-                  setNewCreatingGuidline({
-                    title: "",
-                    details: "",
-                  });
-                }}
+                disabled={parsingGuidelines}
+                onClick={onParse}
               >
-                <LightningBoltIcon className="mr-1" />
-                Parse Guidelines
+                {parsingGuidelines ? (
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <LightningBoltIcon className="mr-1" />
+                )}
+                {parsingGuidelines
+                  ? "Parsing Guidelines..."
+                  : "Parse Guidelines"}
               </Button>
             </div>
           )}
@@ -332,7 +395,6 @@ export const Dashboard = (props: {
                     onClick={() => {
                       setGeneratingExamples(true);
                       // Request API
-                      console.log("API request");
                       axios
                         .post(
                           `${process.env.NEXT_PUBLIC_API_URL}/guidelines/examples`,
@@ -348,7 +410,6 @@ export const Dashboard = (props: {
                         )
                         .then((res: any) => {
                           // Display positive and negative examples
-                          console.log(res.data);
                           setPositiveExample(res.data.positive);
                           setNegativeExample(res.data.negative);
                           setGeneratingExamples(false);
