@@ -113,12 +113,13 @@ export default function Home() {
           // @ts-ignore
           loadingAuth={(authCode || githubToken) && !authToken}
         />
-        {authToken && repoConnected ? (
+        {authToken && githubToken && repoConnected ? (
           <Dashboard
             className="flex-1"
             selectedRepoId={selectedRepoId}
             authToken={authToken}
             selectedRepoConnected={repoConnected}
+            githubToken={githubToken}
           />
         ) : (
           <Label className="text-2xl w-full h-full items-center justify-center flex">

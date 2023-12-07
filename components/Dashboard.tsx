@@ -45,6 +45,20 @@ import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast.ts";
 import { getAxiosErorrMessage } from "./utils.tsx";
 
+interface GuidelineCreation {
+  order: number;
+  title: string;
+  details: string;
+  repo_id: number;
+}
+
+interface ParsedGuideline {
+  repo_id: number;
+  origin_path: string;
+  title: string;
+  details: string;
+}
+
 export const Dashboard = (props: {
   githubToken: string;
   authToken: string;
@@ -79,7 +93,7 @@ export const Dashboard = (props: {
     guidelines.find((guideline: any) => guideline.id === selectedGuidelineId) ||
     newCreatingGuidline;
 
-  async function registerGuideline(guideline) {
+  async function registerGuideline(guideline: GuidelineCreation) {
     axios
       .post(`${process.env.NEXT_PUBLIC_API_URL}/guidelines/`, guideline, {
         headers: {
@@ -113,16 +127,17 @@ export const Dashboard = (props: {
       .then((res: any) => {
         console.log(res.data);
         // Remove unused information
-        const parsedGuidelines = res.data.map(({ title, details }) => ({
-          title,
-          details,
+        const parsedGuidelines = res.data.map((g: ParsedGuideline) => ({
+          title: g.title,
+          details: g.details,
         }));
         // Add guidelines to table
         setGuidelines([...guidelines, ...parsedGuidelines]);
         // API request
         const initIndex = guidelines.length;
-        res.data.map((g, index: number) =>
+        res.data.map((g: ParsedGuideline, index: number) =>
           registerGuideline({
+            // @ts-ignore
             repo_id: props.selectedRepoId,
             order: initIndex + index,
             title: g.title,
