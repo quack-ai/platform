@@ -1,4 +1,12 @@
-import { ArrowLeftIcon, PlusIcon, ReloadIcon } from "@radix-ui/react-icons";
+import {
+  ArrowLeftIcon,
+  CheckIcon,
+  LightningBoltIcon,
+  MagicWandIcon,
+  PlusIcon,
+  ReloadIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -104,18 +112,32 @@ export const Dashboard = (props: {
           )}
           <CardTitle className="text-4xl mb-4">Guideline Management</CardTitle>
           {!selectedGuideline && (
-            <Button
-              className="mr-4"
-              onClick={() => {
-                setNewCreatingGuidline({
-                  title: "",
-                  details: "",
-                });
-              }}
-            >
-              <PlusIcon className="mr-1" />
-              Create Guideline
-            </Button>
+            <div>
+              <Button
+                className="mr-4"
+                onClick={() => {
+                  setNewCreatingGuidline({
+                    title: "",
+                    details: "",
+                  });
+                }}
+              >
+                <PlusIcon className="mr-1" />
+                Create Guideline
+              </Button>
+              <Button
+                className="mr-4"
+                onClick={() => {
+                  setNewCreatingGuidline({
+                    title: "",
+                    details: "",
+                  });
+                }}
+              >
+                <LightningBoltIcon className="mr-1" />
+                Parse Guidelines
+              </Button>
+            </div>
           )}
         </div>
       </CardHeader>
@@ -288,12 +310,22 @@ export const Dashboard = (props: {
                 {savingGuideline && (
                   <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 )}
+                <CheckIcon className="mr-1" />
                 {newCreatingGuidline ? "Create Guideline" : "Save Guideline"}
+              </Button>
+              <Button
+                variant={"outline"}
+                className="mb-4 mr-4"
+                onClick={() => {}}
+              >
+                <MagicWandIcon className="mr-1" />
+                Generate examples
               </Button>
               {!newCreatingGuidline && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant={"outline"} className="mb-4">
+                      <TrashIcon className="mr-1" />
                       Delete Guideline
                     </Button>
                   </AlertDialogTrigger>
