@@ -144,11 +144,12 @@ export const Dashboard = (props: {
             details: g.details,
           }),
         );
+        setParsingGuidelines(false);
       })
       .catch((e) => {
         console.error(e);
+        setParsingGuidelines(false);
       });
-    setParsingGuidelines(false);
   };
 
   useEffect(() => {
