@@ -34,6 +34,7 @@ import { getAxiosErorrMessage } from "./utils";
 const ReorderableList = (props: {
   onEdit: any;
   authToken: string;
+  githubToken: string;
   selectedRepoId: number | null;
   guidelines: any;
   loadingGuidelines: boolean;
@@ -213,6 +214,9 @@ const ReorderableList = (props: {
                                 {
                                   headers: {
                                     Authorization: "Bearer " + props.authToken,
+                                  },
+                                  data: {
+                                    github_token: props.githubToken,
                                   },
                                 },
                               )

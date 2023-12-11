@@ -555,6 +555,7 @@ export const Dashboard = (props: {
             }}
             selectedRepoId={props.selectedRepoId}
             authToken={props.authToken}
+            githubToken={props.githubToken}
             triggerRefetchGuidelines={() => {
               setTriggerGuidelineRefetch(triggerGuidelineRefetch + 1);
             }}
