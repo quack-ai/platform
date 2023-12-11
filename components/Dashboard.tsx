@@ -54,7 +54,7 @@ interface GuidelineCreation {
 
 interface ParsedGuideline {
   repo_id: number;
-  origin_path: string;
+  source: string;
   title: string;
   details: string;
 }
