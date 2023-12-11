@@ -54,7 +54,7 @@ interface GuidelineCreation {
 
 interface ParsedGuideline {
   repo_id: number;
-  origin_path: string;
+  source: string;
   title: string;
   details: string;
 }
@@ -95,11 +95,18 @@ export const Dashboard = (props: {
 
   async function registerGuideline(guideline: GuidelineCreation) {
     axios
-      .post(`${process.env.NEXT_PUBLIC_API_URL}/guidelines/`, guideline, {
-        headers: {
-          Authorization: "Bearer " + props.authToken,
+      .post(
+        `${process.env.NEXT_PUBLIC_API_URL}/guidelines/`,
+        {
+          ...guideline,
+          github_token: props.githubToken,
         },
-      })
+        {
+          headers: {
+            Authorization: "Bearer " + props.authToken,
+          },
+        },
+      )
       .then((res) => {})
       .catch((e) => {
         toast({
@@ -144,11 +151,12 @@ export const Dashboard = (props: {
             details: g.details,
           }),
         );
+        setParsingGuidelines(false);
       })
       .catch((e) => {
         console.error(e);
+        setParsingGuidelines(false);
       });
-    setParsingGuidelines(false);
   };
 
   useEffect(() => {
@@ -202,6 +210,7 @@ export const Dashboard = (props: {
             <div>
               <Button
                 className="mr-4"
+                disabled={parsingGuidelines}
                 onClick={() => {
                   setNewCreatingGuidline({
                     title: "",
@@ -317,6 +326,7 @@ export const Dashboard = (props: {
                             ...newCreatingGuidline,
                             repo_id: props.selectedRepoId,
                             order: guidelines.length,
+                            github_token: props.githubToken,
                           },
                           {
                             headers: {
@@ -360,6 +370,7 @@ export const Dashboard = (props: {
                           {
                             title: selectedGuideline.title,
                             details: selectedGuideline.details,
+                            github_token: props.githubToken,
                           },
                           {
                             headers: {
@@ -489,6 +500,9 @@ export const Dashboard = (props: {
                                 headers: {
                                   Authorization: "Bearer " + props.authToken,
                                 },
+                                data: {
+                                  github_token: props.githubToken,
+                                },
                               },
                             )
                             .then((res: any) => {
@@ -531,6 +545,7 @@ export const Dashboard = (props: {
                   `${process.env.NEXT_PUBLIC_API_URL}/repos/${props.selectedRepoId}/guidelines/order`,
                   {
                     guideline_ids: order,
+                    github_token: props.githubToken,
                   },
                   {
                     headers: {
@@ -555,6 +570,7 @@ export const Dashboard = (props: {
             }}
             selectedRepoId={props.selectedRepoId}
             authToken={props.authToken}
+            githubToken={props.githubToken}
             triggerRefetchGuidelines={() => {
               setTriggerGuidelineRefetch(triggerGuidelineRefetch + 1);
             }}

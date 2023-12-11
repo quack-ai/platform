@@ -247,8 +247,7 @@ export const LeftPanel = (props: {
                     `${process.env.NEXT_PUBLIC_API_URL}/repos/`,
                     {
                       id: selectedGithubRepo?.id,
-                      owner_id: selectedGithubRepo?.owner?.id,
-                      full_name: selectedGithubRepo?.full_name,
+                      github_token: props.githubToken,
                     },
                     {
                       headers: {
@@ -288,6 +287,9 @@ export const LeftPanel = (props: {
                     {
                       headers: {
                         Authorization: "Bearer " + props.authToken,
+                      },
+                      data: {
+                        github_token: props.githubToken,
                       },
                     },
                   )
