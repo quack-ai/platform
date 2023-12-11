@@ -210,6 +210,7 @@ export const Dashboard = (props: {
             <div>
               <Button
                 className="mr-4"
+                disabled={parsingGuidelines}
                 onClick={() => {
                   setNewCreatingGuidline({
                     title: "",
