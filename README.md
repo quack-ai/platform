@@ -2,8 +2,14 @@
   <a href="https://quack-ai.com"><img src="https://uploads-ssl.webflow.com/64a6527708bc7f2ce5fd6b2a/64a654825ed3d444b47c4935_quack-logo%20(copy).png" width="100" height="100"></a>
 </p>
 <h1 align="center">
-    Maintainer Platform
+ Quack platform - Guideline management dashboard
 </h1>
+<p align="center">
+  <a href="https://github.com/quack-ai/companion">VSCode extension</a> ・
+  <a href="https://github.com/quack-ai/contribution-api">Backend API</a> ・
+  <a href="https://github.com/quack-ai/platform">Guideline management platform</a>
+</p>
+<h2 align="center"></h2>
 
 <p align="center">
   <a href="https://github.com/quack-ai/platform/actions/workflows/builds.yml">
