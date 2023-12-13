@@ -52,6 +52,16 @@ interface GuidelineCreation {
   repo_id: number;
 }
 
+interface RegisteredGuideline {
+  id: number;
+  repo_id: number;
+  title: string;
+  details: string;
+  order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 interface ParsedGuideline {
   repo_id: number;
   source: string;
@@ -74,7 +84,7 @@ export const Dashboard = (props: {
   const [positiveExample, setPositiveExample] = useState(null);
   const [negativeExample, setNegativeExample] = useState(null);
 
-  const [guidelines, setGuidelines] = useState<any[]>([]);
+  const [guidelines, setGuidelines] = useState<RegisteredGuideline[]>([]);
   const [loadingGuidelines, setLoadingGuidelines] = useState(false);
   const [newCreatingGuidline, setNewCreatingGuidline] = useState<{
     title: string;
@@ -90,32 +100,9 @@ export const Dashboard = (props: {
   const DETAILS_MAX_CHARS = 1000;
 
   const selectedGuideline =
-    guidelines.find((guideline: any) => guideline.id === selectedGuidelineId) ||
-    newCreatingGuidline;
-
-  async function registerGuideline(guideline: GuidelineCreation) {
-    axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/guidelines/`,
-        {
-          ...guideline,
-          github_token: props.githubToken,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + props.authToken,
-          },
-        },
-      )
-      .then((res) => {})
-      .catch((e) => {
-        toast({
-          variant: "destructive",
-          title: "Could not create new guideline",
-          description: getAxiosErorrMessage(e).toString(),
-        });
-      });
-  }
+    guidelines.find(
+      (guideline: RegisteredGuideline) => guideline.id === selectedGuidelineId,
+    ) || newCreatingGuidline;
 
   const onParse = async () => {
     setParsingGuidelines(true);
@@ -131,26 +118,52 @@ export const Dashboard = (props: {
           },
         },
       )
-      .then((res: any) => {
-        console.log(res.data);
+      .then(async (res: any) => {
         // Remove unused information
         const parsedGuidelines = res.data.map((g: ParsedGuideline) => ({
           title: g.title,
           details: g.details,
         }));
-        // Add guidelines to table
-        setGuidelines([...guidelines, ...parsedGuidelines]);
         // API request
         const initIndex = guidelines.length;
-        res.data.map((g: ParsedGuideline, index: number) =>
-          registerGuideline({
-            // @ts-ignore
-            repo_id: props.selectedRepoId,
-            order: initIndex + index,
-            title: g.title,
-            details: g.details,
-          }),
+        const promiseArray = res.data.map(
+          (g: ParsedGuideline, index: number) => {
+            return axios
+              .post(
+                `${process.env.NEXT_PUBLIC_API_URL}/guidelines/`,
+                {
+                  repo_id: props.selectedRepoId,
+                  order: initIndex + index,
+                  title: g.title,
+                  details: g.details,
+                  github_token: props.githubToken,
+                },
+                {
+                  headers: {
+                    Authorization: "Bearer " + props.authToken,
+                  },
+                },
+              )
+              .then((res) => {
+                return res.data;
+              })
+              .catch((e) => {
+                toast({
+                  variant: "destructive",
+                  title: "Could not create new guideline",
+                  description: getAxiosErorrMessage(e).toString(),
+                });
+                return null;
+              });
+          },
         );
+        Promise.all(promiseArray)
+          .then((results) => {
+            setGuidelines([...guidelines, ...results]);
+          })
+          .catch((e) => {
+            console.error(e);
+          });
         setParsingGuidelines(false);
       })
       .catch((e) => {
