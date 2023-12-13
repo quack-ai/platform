@@ -276,10 +276,12 @@ export const Dashboard = (props: {
                     };
 
                     const guidelineIndex = guidelines.findIndex(
+                      // @ts-ignore
                       (g) => g.id === selectedGuideline.id,
                     );
 
                     const newGuidelines = [...guidelines];
+                    // @ts-ignore
                     newGuidelines.splice(guidelineIndex, 1, newGuideline);
 
                     setGuidelines(newGuidelines);
@@ -307,10 +309,12 @@ export const Dashboard = (props: {
                     };
 
                     const guidelineIndex = guidelines.findIndex(
+                      // @ts-ignore
                       (g) => g.id === selectedGuideline.id,
                     );
 
                     const newGuidelines = [...guidelines];
+                    // @ts-ignore
                     newGuidelines.splice(guidelineIndex, 1, newGuideline);
 
                     setGuidelines(newGuidelines);
