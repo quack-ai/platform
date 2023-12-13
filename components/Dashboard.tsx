@@ -189,7 +189,12 @@ export const Dashboard = (props: {
           },
         )
         .then((res: any) => {
-          setGuidelines(res.data);
+          setGuidelines(
+            res.data.sort(
+              (a: RegisteredGuideline, b: RegisteredGuideline) =>
+                a.order - b.order,
+            ),
+          );
           setLoadingGuidelines(false);
         })
         .catch((e) => {
