@@ -94,3 +94,8 @@
   border-radius: 4px;
   white-space: pre-wrap;
 }
+
+.scrollable-table {
+  max-height: 55vh;
+  overflow-y: auto;
+}
