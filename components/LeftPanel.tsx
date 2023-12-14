@@ -271,44 +271,6 @@ export const LeftPanel = (props: {
               {connectedRepo ? "Repo Connected" : "Connect Repo"}
             </Button>
           )}
-          {connectedRepo && (
-            <Button
-              variant="secondary"
-              className="mb-8"
-              onClick={() => {
-                const enabled = connectedRepo.is_active;
-
-                axios
-                  .put(
-                    `${process.env.NEXT_PUBLIC_API_URL}/repos/${
-                      connectedRepo.id
-                    }/${enabled ? "disabled" : "enable"}`,
-                    {},
-                    {
-                      headers: {
-                        Authorization: "Bearer " + props.authToken,
-                      },
-                      data: {
-                        github_token: props.githubToken,
-                      },
-                    },
-                  )
-                  .then((res) => {
-                    setRefetchRepoListTrigger(refetchRepoListTrigger + 1);
-                  })
-                  .catch((e) => {
-                    toast({
-                      variant: "destructive",
-                      title: "Could not modify repo",
-                      description: getAxiosErorrMessage(e).toString(),
-                    });
-                    console.error(e);
-                  });
-              }}
-            >
-              {connectedRepo?.is_active ? "Disable Repo" : "Enable Repo"}
-            </Button>
-          )}
         </div>
       </CardContent>
       <CardFooter></CardFooter>
