@@ -47,7 +47,7 @@ const ReorderableList = (props: {
   return (
     <Card className="m-4">
       <CardContent>
-        <div>
+        <div className="scrollable-table">
           <Table>
             <TableCaption
               onDragOver={() => {
