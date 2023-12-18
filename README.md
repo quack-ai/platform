@@ -34,6 +34,7 @@
   <a href="https://github.com/vercel/next.js">
     <img src="https://img.shields.io/badge/Next.js-13-000000?style=flat-square&logo=Next.js&logoColor=white" alt="React">
   </a>
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fquack-ai%2Fplatform&env=NEXT_PUBLIC_API_URL,NEXT_PUBLIC_REDIRECT_URI&envDescription=API%20endpoint%20and%20OAuth%20redirect&envLink=https%3A%2F%2Fgithub.com%2Fquack-ai%2Fplatform%3Ftab%3Dreadme-ov-file%23configuration&project-name=my-quack-platform&repository-name=my-quack-platform"><img src="https://img.shields.io/badge/Vercel-Deploy-000000?style=flat-square&logo=vercel&logoColor=white" alt="Deploy with Vercel"/></a>
   <a href="https://github.com/quack-ai/platform/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-Apache 2.0-blue?style=flat-square" alt="license">
   </a>

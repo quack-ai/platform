@@ -1,25 +1,13 @@
-FROM node:18-alpine3.15 as builder
+FROM node:18-alpine3.15
 
 WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile \
+    && yarn cache clean
 
 COPY . .
 
-RUN yarn build
-
-FROM node:18-alpine3.15 as runner
-
-WORKDIR /app
-
-COPY --from=builder /app/yarn.lock .
-COPY --from=builder /app/package.json .
-COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-
-CMD node server.js
+CMD yarn dev
 EXPOSE 3000
