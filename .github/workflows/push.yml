@@ -23,21 +23,11 @@ jobs:
       - name: Push to hub
         run: docker push quackai/platform:latest
 
-  deploy-dev:
+  check-docker:
     needs: dockerhub
     runs-on: ubuntu-latest
     steps:
-      - uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_DEV_HOST }}
-          username: ${{ secrets.SSH_DEV_USERNAME }}
-          key: ${{ secrets.SSH_DEPLOY_DEV }}
-          script: |
-            docker pull quackai/platform:latest
-            docker rmi -f $(docker images -f "dangling=true" -q)
-            cd devops && docker compose stop frontend && docker compose up -d
-            docker inspect -f '{{ .Created }}' $(docker compose images -q frontend)
-      - name: Ping server
-        env:
-          APP_URL: ${{ secrets.NEXT_PUBLIC_REDIRECT_URI }}
-        run: sleep 10 && curl $APP_URL
+      - name: Run the latest image
+        run: |
+          docker pull quackai/platform:latest
+          docker inspect -f '{{ .Created }}' quackai/platform:latest
