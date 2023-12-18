@@ -12,7 +12,10 @@ style:
 
 # Build the docker
 build:
-	docker build . -t quackai/platform:node18-alpine3.15
+	docker build . -t quackai/platform:latest
+
+prod:
+	docker build -f Dockerfile.prod . -t quackai/platform:node18-alpine3.15
 
 # Run the docker
 run:
