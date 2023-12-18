@@ -18,10 +18,10 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_REDIRECT_URI: ${{ secrets.NEXT_PUBLIC_REDIRECT_URI }}
-        run: docker-compose up -d --build
+        run: docker compose up -d --build
       - name: Docker sanity check
         run: sleep 20 && nc -vz localhost 3000
       - name: Debug
-        run: docker-compose logs
+        run: docker compose logs
       - name: Ping server
         run: curl http://localhost:3000
