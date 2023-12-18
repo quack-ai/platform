@@ -3,12 +3,10 @@ version: "3.7"
 services:
   frontend:
     build: .
-    command: node server.js
-    container_name: frontend
+    command: yarn dev
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       - NEXT_PUBLIC_REDIRECT_URI=${NEXT_PUBLIC_REDIRECT_URI}
-      - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
       - NEXT_PUBLIC_CHATWOOT_ENDPOINT=${NEXT_PUBLIC_CHATWOOT_ENDPOINT}
       - NEXT_PUBLIC_CHATWOOT_TOKEN=${NEXT_PUBLIC_CHATWOOT_TOKEN}
     ports:
