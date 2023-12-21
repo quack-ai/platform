@@ -256,6 +256,9 @@ export const LeftPanel = (props: {
                     },
                   )
                   .then((res) => {
+                    setConnectedRepos([...connectedRepos, res.data]);
+                    props.setRepoConnected(res.data);
+                    props.setSelectedRepoId(res.data.id);
                     setRefetchRepoListTrigger(refetchRepoListTrigger + 1);
                   })
                   .catch((e) => {
@@ -268,7 +271,7 @@ export const LeftPanel = (props: {
                   });
               }}
             >
-              {connectedRepo ? "Repo Connected" : "Connect Repo"}
+              {connectedRepo ? "Repo Connected" : "Install Repo"}
             </Button>
           )}
         </div>
