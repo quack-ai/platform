@@ -94,7 +94,7 @@ This file will have to hold the following information:
 
 Optionally, the following information can be added:
 
-- `NEXT_PUBLIC_POSTHOG_KEY`: the name of the [PostgreSQL](https://www.postgresql.org/) database that will be created.
+- `NEXT_PUBLIC_POSTHOG_KEY`: the key of the [PostHog](https://posthog.com/) platform that will be created.
 
 So your `.env` file should look like something similar to:
 
