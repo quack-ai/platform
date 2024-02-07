@@ -2,7 +2,6 @@
   "name": "quack-platform",
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "private": false,
   "description": "Guideline curation by maintainers for contributors",
   "author": {
     "name": "F-G Fernandez",

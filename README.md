@@ -100,7 +100,7 @@ So your `.env` file should look like something similar to:
 
 ```
 NEXT_PUBLIC_API_URL=http://your-quack-api-host.com/api/v1
-NEXT_PUBLIC_REDIRECT_URI=http://localhost:3000/
+NEXT_PUBLIC_REDIRECT_URI=http://127.0.0.1:3000/    # [`Recommends not to use localhost.`](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#loopback-redirect-urls)
 NEXT_PUBLIC_POSTHOG_KEY=phc_my_api_key
 ```
 
