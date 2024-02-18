@@ -32,11 +32,11 @@
   - traefik.yml
   - .dockerignore
 
-"topic: documentation":
+"topic: docs":
   - README.md
   - CONTRIBUTING.md
   - CODE_OF_CONDUCT.md
 
-"type: code quality":
+"topic: style":
   - .eslintrc.json
   - .prettierignore
