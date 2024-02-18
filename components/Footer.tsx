@@ -4,9 +4,10 @@ import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa";
 import styles from "../styles/Footer.module.css";
 
 const Footer: FC = () => {
+  const currentYear = new Date().getFullYear();
   return (
     <footer className={styles.footerContainer}>
-      <p>© 2023 Quack Labs, Inc.</p>
+      <p>© {currentYear} Quack Labs, Inc.</p>
       <div className={styles.socialLinks}>
         <a
           href="https://discord.gg/E9rY3bVCWd"
